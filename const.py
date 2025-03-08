@@ -23,10 +23,10 @@ WIDTH_LIVES: int = 40
 WIDTH_GHOST: int = 28
 HEIGHT_GHOST: int = 28
 SPEED_GHOST: int = 2
-ID_BLINKY: int = 0
-ID_INKY: int = 1
-ID_PINKY: int = 2
-ID_CLYDE: int = 3
+ID_BLINKY: int = 13
+ID_INKY: int = 10
+ID_PINKY: int = 11
+ID_CLYDE: int = 12
 DIRECTIONS = [(SPEED_GHOST, 0), (-SPEED_GHOST, 0), (0, SPEED_GHOST), (0, -SPEED_GHOST)]
 
 # POWER_UP
