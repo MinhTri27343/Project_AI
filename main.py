@@ -32,13 +32,11 @@ if __name__ == "__main__":
     setUp = SetUpGame(boards)
     level1 = Level1(setUp, False)
     level2 = Level2(setUp, False)
-    level3 = Level3(setUp, True)
+    level3 = Level3(setUp, False)
     level4 = Level4(setUp, False)
     level5 = Level5(setUp, False)
     level6 = Level6(setUp, True)
     level6.execute()
     
     
-    # Cao: 17, Rong: 20
-    # CAO = 
 

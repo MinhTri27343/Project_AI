@@ -1,5 +1,6 @@
 from queue import PriorityQueue 
 import utils
+from const import *
 def Heuristic(start, end):
     return abs(end[1] - start[1]) + abs(end[0] - start[0])
 
@@ -11,8 +12,8 @@ def AStar(grid, start, end):
     queue = PriorityQueue()
     parent = {}
     cost = {}
-    direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
-    if grid[start[0]][start[1]] in range(2, 9) or grid[end[0]][end[1]] in range(2, 9) or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
+    direction = DIRECTIONS
+    if grid[start[0]][start[1]] not in utils.VALID_VALUES_GHOST or grid[end[0]][end[1]] not in utils.VALID_VALUES_GHOST or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
         return None
     cost[start] = 0
     queue.put((Heuristic(start, end), start))

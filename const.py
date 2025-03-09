@@ -33,7 +33,6 @@ ID_BLINKY: int = 0
 ID_INKY: int = 1
 ID_PINKY: int = 2
 ID_CLYDE: int = 3
-DIRECTIONS = [(SPEED_GHOST, 0), (-SPEED_GHOST, 0), (0, SPEED_GHOST), (0, -SPEED_GHOST)]
 VALID_VALUES_GHOST: list = [0, 1, 2, 9]
 
 # POWER_UP
@@ -52,4 +51,5 @@ BOT_RIGHT: int = 8
 GATE: int = 9
 
 
-# RECTANGE: ((230, 245), (340, 285))  : (x, y)
+# DIRECTION
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]

@@ -1,13 +1,14 @@
 from collections import deque 
 import utils 
+from const import * 
 
-
+utils.VALID_VALUES_GHOST
 def BFS(matrix, start, end):
     row_start, col_start = start
     row_end, col_end = end
     rows, cols = len(matrix), len(matrix[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Lên, xuống, trái, phải
-    if matrix[row_start][col_start] in range(3, 9) or matrix[row_end][col_end] in range(3, 9) or utils.ghost_status[row_start][col_start] == 1 or utils.ghost_status[row_end][col_end] == 1:
+    directions = DIRECTIONS  # Lên, xuống, trái, phải
+    if matrix[row_start][col_start] not in utils.VALID_VALUES_GHOST  or matrix[row_end][col_end] not in    utils.VALID_VALUES_GHOST  or utils.ghost_status[row_start][col_start] == 1 or utils.ghost_status[row_end][col_end] == 1:
         return None
     queue = deque([(row_start, col_start, [])])
     visited = set()
