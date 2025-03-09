@@ -1,5 +1,6 @@
 import utils
 from collections import deque
+from const import *
 queue_max = deque(maxlen= 5)
 def IDS(arr2D, start, end):
     def DLS(arr2D, start, end, max_depth):
@@ -16,11 +17,11 @@ def IDS(arr2D, start, end):
             
             if depth < max_depth:
                 visited.add(tuple(now))
-                dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                dir = DIRECTIONS
                 for d in dir:
                     node = tuple((now[0] + d[0], now[1] + d[1]))
                     if 0 <= node[0] < rows and 0 <= node[1] < cols and node not in visited and node not in queue_max:
-                        if arr2D[node[0]][node[1]] in {0, 1, 2, 9}  and utils.ghost_status[node[0]][node[1]] == 0:
+                        if arr2D[node[0]][node[1]] in utils.VALID_VALUES_GHOST  and utils.ghost_status[node[0]][node[1]] == 0:
                             stack.append((node, path + [(node)], depth + 1))
         return None
 

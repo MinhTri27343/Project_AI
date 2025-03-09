@@ -8,7 +8,7 @@ RIGHT: int = 0
 LEFT: int = 1
 UP: int = 2
 DOWN: int = 3
-
+TIME_BLOCK_PLAYER: int = 0
 
 
 # PLAYER 

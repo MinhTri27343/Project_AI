@@ -14,6 +14,7 @@ from Level.Level6 import Level6
 class SetUpGame: 
     def __init__(self, boards):
         pygame.init()
+        pygame.display.set_caption("Pacman Game")
         self.timer = pygame.time.Clock()
         player_x, player_y = START_PLAYER_POSITION
         self.font = pygame.font.Font('freesansbold.ttf', 20)

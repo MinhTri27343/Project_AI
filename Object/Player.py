@@ -1,9 +1,7 @@
 import pygame
 from const import *
 from board import boards 
-from utils import getCenter
 import utils
-from board import boards
 class Player: 
     def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix):
         self.x = x
@@ -31,7 +29,7 @@ class Player:
         self.gameOver = False
         
         
-    def resetPlayer(self):
+    def resetIntoDefault(self):
         self.startup_counter = 0
         self.power_counter = 0
         self.x, self.y = START_PLAYER_POSITION
@@ -133,15 +131,16 @@ class Player:
             
     def check_collision_no_power_up(self, ghosts): 
         if not self.power_up:
-            self.circle.topleft = getCenter(self.x, self.y, self.width, self.height)
+            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
                 ghost.rect.topleft = (ghost.center_x, ghost.center_y)
-                print(f"Pac-Man rect: {self.circle.topleft}, Ghost rect: {ghost.rect.topleft}")
+                # print(f"Pac-Man rect: {self.circle.topleft}, Ghost rect: {ghost.rect.topleft}")
                 if self.circle.colliderect(ghost.rect) and not ghost.dead:
                     if self.lives > 0:
                         self.lives -= 1
-                        self.resetPlayer()
-                        ghost.resetGhost()
+                        self.resetIntoDefault()
+                        for ghost in ghosts:
+                            ghost.resetIntoDefault()
                     else:
                         self.gameOver = True
                         self.moving = False
@@ -151,7 +150,6 @@ class Player:
         if self.power_up: 
             for ghost in ghosts:
                 if self.circle.colliderect(ghost.rect) and not ghost.dead and ghost.eaten:
-                    print("VO2")
                     if self.lives > 0: 
                         self.lives -= 1
                         self.resetPlayer()
@@ -165,7 +163,12 @@ class Player:
         if self.power_up:
             for ghost in ghosts:
                 if self.circle.colliderect(ghost.rect) and not ghost.dead and not ghost.eaten:
-                    print("VO3")
                     ghost.eaten = True
                     self.score += SCORE_GHOST
                     ghost.dead = True
+    
+    def isGameOver(self):
+        if (self.lives == 0):
+            return True
+        else: 
+            return False

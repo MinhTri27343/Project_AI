@@ -32,7 +32,8 @@ def getGhosts(screen, player):
     return [blinky, inky, pinky, clyde]
 
 def getAlgorithm():
-    return [BFS, IDS, UCS, AStar]
+    # return [BFS, IDS, UCS, AStar]
+    return [BFS, BFS, UCS, AStar]
 
 
 def isValidToRight(center_x, center_y, domain, validValues): 
@@ -62,5 +63,10 @@ def isValidToDown(center_x, center_y, domain, validValues):
         return True
     else: 
         return False 
+    
+def resetAllGhosts(ghosts): 
+    for ghost in ghosts:
+        ghost.reset()
 
 ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
+colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255), (0, 0, 255), (128, 0, 128)]

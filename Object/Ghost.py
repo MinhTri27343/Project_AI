@@ -56,7 +56,7 @@ class Ghost:
         self.spooked_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/powerup.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.rect = self.draw(player)
         
-    def resetGhost(self):
+    def resetIntoDefault(self):
         self.x_pos = self.x_origin
         self.y_pos = self.y_origin
         self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)

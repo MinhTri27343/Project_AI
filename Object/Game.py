@@ -1,6 +1,7 @@
 import pygame
 from const import *
 from board import boards 
+from EndGame.EndGameScreen import EndGameScreen
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
         self.screen = setUp.screen
@@ -14,6 +15,10 @@ class Game:
         self.moving = moving
         self.ghosts = ghosts
         self.algorithms = algorithms
+        self.gameOver = False
+        self.gameOverScreen = EndGameScreen("GAME OVER")
+        self.win = False
+        self.gameWinScreen = EndGameScreen("YOU WIN")
 
         for i in range(1, 5):
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
@@ -41,8 +46,8 @@ class Game:
                 self.player.power_counter = 0
                 self.player.eaten_ghost = [False, False, False, False]
                 
-            # Khóa trong 3s đầu không cho di chuyển 
-            if self.player.startup_counter < 3 * FPS:
+            # Khoá PACMAN     
+            if self.player.startup_counter < TIME_BLOCK_PLAYER * FPS:
                 self.player.startup_counter += 1
                 self.player.moving = False
             else: 
@@ -63,7 +68,13 @@ class Game:
                 self.ghosts[i].move_towards_player(self.player, boards, self.algorithms[i])
                 
             self.player.check_collision()
+            self.player.check_collision_no_power_up(self.ghosts)
+            self.player.check_collision_with_eaten_ghost(self.ghosts)
+            self.player.eat_ghost(self.ghosts)
             self.board.draw_misc()
+            if (self.player.isGameOver() == True):
+                self.gameOver = True
+                self.gameOverScreen.animate_text()
             self.handle_events()
             pygame.display.flip()
         pygame.quit()
@@ -102,3 +113,7 @@ class Game:
                 self.player.direction = UP
             if self.player.direction_command == DOWN and self.player.turns_allowed[DOWN]:
                  self.player.direction = DOWN
+            # Nếu game over nhấn phím bất kỳ để thoát 
+            if self.gameOver:
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+                    self.running = False  # Nhấn phím bất kỳ để thoát
