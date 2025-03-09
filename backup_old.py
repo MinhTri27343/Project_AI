@@ -6,7 +6,6 @@ from const import *
 from board import boards
 import os
 from queue import PriorityQueue 
-from ghost_status import ghost_status
 import heapq
 
 def UCS(arr2D, start, end):
@@ -16,7 +15,7 @@ def UCS(arr2D, start, end):
         else: return 1
     if start == end:
         return None
-    if( arr2D[end[0]][end[1]] not in {0, 1, 2, 9} or arr2D[start[0]][start[1]] not in {0, 1, 2, 9} or ghost_status[end[0]][end[1]] == 1 or ghost_status[start[0]][start[1]] == 1):
+    if( arr2D[end[0]][end[1]] not in {0, 1, 2, 9} and arr2D[start[0]][start[1]] not in {0, 1, 2, 9} ):
         return None
     rows, cols = len(arr2D), len(arr2D[0])
     queue = []  
@@ -32,12 +31,14 @@ def UCS(arr2D, start, end):
         for d in dir:
              node = tuple((now[0] + d[0], now[1] + d[1]))
              if 0 <= node[0] < rows and 0 <= node[1] < cols and node not in visited:
-                if arr2D[now[0] + d[0]][now[1] + d[1]] in {0, 1, 2, 9} and ghost_status[now[0] + d[0]][now[1] + d[1]] == 0:
+                if arr2D[now[0] + d[0]][now[1] + d[1]] in {0, 1, 2, 9}:
                     heapq.heappush(queue,(getCost(before, node) + min_cost,node, path + [node], now) )
+
+    
     return None
 
 #=====================================================================================================================
-queue_max = deque(maxlen = 10)
+queue_max = deque(maxlen= 2)
 def IDS(arr2D, start, end):
     def DLS(arr2D, start, end, max_depth):
         stack = [(start, [tuple(start)], 0)]  #[now , path, depth]
@@ -58,20 +59,20 @@ def IDS(arr2D, start, end):
                 for d in dir:
                     node = tuple((now[0] + d[0], now[1] + d[1]))
                     if 0 <= node[0] < rows and 0 <= node[1] < cols and node not in visited and node not in queue_max:
-                        if arr2D[now[0] + d[0]][now[1] + d[1]] in {0, 1, 2, 9} and ghost_status[now[0] + d[0]][now[1] + d[1]] == 0:
+                        if arr2D[now[0] + d[0]][now[1] + d[1]] in {0, 1, 2, 9}:
                             stack.append((node, path + [(node)], depth + 1))
         return None
 
 
     if start == end:
         return None
-    if( arr2D[end[0]][end[1]] not in {0, 1, 2, 9} or arr2D[start[0]][start[1]] not in {0, 1, 2, 9} or ghost_status[end[0]][end[1]] == 1 or ghost_status[start[0]][start[1]] == 1):
+    if( arr2D[end[0]][end[1]] not in {0, 1, 2, 9} and arr2D[start[0]][start[1]] not in {0, 1, 2, 9} ):
         return None
     rows, cols = len(arr2D), len(arr2D[0])
     
      
-    depth = 10
-    depth_limit = rows * cols
+    depth = 0
+    depth_limit = rows*cols
    
     while depth <= depth_limit:
         result = DLS(arr2D, start, end, depth)
@@ -81,30 +82,30 @@ def IDS(arr2D, start, end):
     
     
     return None
-
-def BFS(matrix, start, end):
+   
+def bfs(matrix, start, end):
     row_start, col_start = start
     row_end, col_end = end
     rows, cols = len(matrix), len(matrix[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Lên, xuống, trái, phải
     
-    if matrix[row_start][col_start] in range(3, 9) or matrix[row_end][col_end] in range(3, 9) or ghost_status[row_start][col_start] == 1 or ghost_status[row_end][col_end] == 1:
+    # Kiểm tra nếu điểm bắt đầu hoặc kết thúc không thể đi được
+    if matrix[row_start][col_start] in range(2, 9) or matrix[row_end][col_end] in range(2, 9):
         return None
+    
     queue = deque([(row_start, col_start, [])])
     visited = set()
     visited.add((row_start, col_start))
-    
     while queue:
         x, y, path = queue.popleft()
         
         # Nếu đến đích, trả về đường đi
         if (x, y) == (row_end, col_end):
             return path + [(x, y)]
-        
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             if 0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited:
-                if matrix[nx][ny] in (0, 1, 2, 9) and ghost_status[nx][ny] == 0:  # Sửa điều kiện này
+                if matrix[nx][ny] in (0, 1, 9):  # Chỉ đi được nếu là 0, 1 hoặc 9
                     visited.add((nx, ny))
                     queue.append((nx, ny, path + [(x, y)]))
     
@@ -121,8 +122,7 @@ def AStar(grid, start, end):
     parent = {}
     cost = {}
     direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
-    if grid[start[0]][start[1]] in range(3, 9) or grid[end[0]][end[1]] in range(3, 9) or ghost_status[start[0]][start[1]] == 1 or ghost_status[end[0]][end[1]] == 1:
-        return None
+    
     cost[start] = 0
     queue.put((Heuristic(start, end), start))
     
@@ -145,12 +145,8 @@ def AStar(grid, start, end):
         for dx, dy in direction:
             new_x, new_y = x + dx, y + dy
             
-            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 2, 9) and ghost_status[new_x][new_y] == 0:
-                new_cost = 0
-                if parent.get((x, y)) and parent[(x, y)][0] != new_x and parent[(x, y)][1] != new_y:
-                    new_cost = cost[current_index] + 1.5
-                else:
-                    new_cost = cost[current_index] + 1
+            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 9):
+                new_cost = cost[current_index] + 1
                 if (new_x, new_y) not in cost or new_cost < cost[(new_x, new_y)]:
                     cost[(new_x, new_y)] = new_cost
                     priority = new_cost + Heuristic((new_x, new_y), end)
@@ -207,7 +203,9 @@ class Board:
     def draw_misc(self):
         score_text = self.font.render(f'Score: {self.player.score}', True, 'white')
         self.screen.blit(score_text, (10, HEIGHT - 30))
-                
+        
+
+        
         # Hiển thị mạng còn sống của player
         for i in range(self.player.lives):
             self.screen.blit(pygame.transform.scale(self.player.images[0], (25, 25)), (WIDTH - (self.player.lives + 2) * WIDTH_LIVES + (i * WIDTH_LIVES), HEIGHT - WIDTH_LIVES))
@@ -335,6 +333,7 @@ class Blinky:
         self.image = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/red.png'), (WIDTH_GHOST, HEIGHT_GHOST)) 
         self.id = ID_BLINKY
         
+        
 class Inky: 
     def __init__(self): 
         self.x = 260
@@ -400,24 +399,20 @@ class Ghost:
         ghost_x_coord, ghost_y_coord = convert_coordinates(self.center_x, self.center_y)
         
         path = name_algorithm(level,  (ghost_y_coord, ghost_x_coord), (player_y_coord, player_x_coord))
-        # print("Player:", player_x_coord, player_y_coord)
-        # print("Ghost:", ghost_x_coord, ghost_y_coord)
+        print("Player:", player_x_coord, player_y_coord)
+        print("Ghost:", ghost_x_coord, ghost_y_coord)
         return path; 
     
     def move_towards_player(self, player, level, name_algorithm):
-        ghost_x_coord, ghost_y_coord = self.convert_coordinates(self.center_x, self.center_y)
-        ghost_status[ghost_y_coord][ghost_x_coord] = 0
-        # print("START", self.center_x, self.center_y)
+        print("START", self.center_x, self.center_y)
         path = self.getPath(player, level, name_algorithm)
-        # print("Path: ", path)
-        # Tra ve trang thai cua bang truoc do
+        print("Path: ", path)
+        ghost_x_coord, ghost_y_coord = self.convert_coordinates(self.center_x, self.center_y)
         if (path and len(path) >= 2):
             if path[0] not in queue_max:
                 queue_max.append(path[0])
             next_i, next_j = path[1]
-            # print("Next: ", next_j, next_i, " Ghost: ", ghost_y_coord, ghost_x_coord) 
-            ##cap nhat trang thai cua bang luc sau
-            # Ghost nay in nguoc
+            print("Next: ", next_j, next_i, " Ghost: ", ghost_x_coord, ghost_y_coord)
             if next_j > ghost_x_coord:
                 self.center_x += self.speed
                 self.direction = RIGHT
@@ -427,7 +422,7 @@ class Ghost:
             elif next_i > ghost_y_coord:
                 self.center_y += self.speed
                 self.direction = DOWN
-                # print("Move", next_i, ghost_y_coord, self.center_y)
+                print("MOve", next_i, ghost_y_coord, self.center_y)
             elif next_i < ghost_y_coord:
                 self.center_y -= self.speed
                 self.direction = UP
@@ -442,14 +437,12 @@ class Ghost:
                 self.center_y += self.speed
         self.x_pos = self.center_x - WIDTH_GHOST // 2
         self.y_pos = self.center_y - HEIGHT_GHOST // 2
-        # print("Pos: ", self.convert_coordinates(self.x_pos, self.y_pos))
         x_coord, y_coord = self.convert_coordinates(self.center_x, self.center_y)
-        # print("Coord: ", self.convert_coordinates(self.center_x, self.center_y))
-        ghost_status[y_coord][x_coord] = 1
-        # print("Ghost toa do: ", self.center_x, self.center_y)
+        print("Ghost toa do: ", self.center_x, self.center_y)
         
 
-            
+                    
+
 class Game:
     def __init__(self, numberRowMatrix, numberColMatrix, player_x, player_y):
         pygame.init()
@@ -481,9 +474,6 @@ class Game:
         # def __init__(self, x_coord, y_coord, target, speed, img, direct, dead, box, id,  screen, player):
         
     def run(self):
-        #0, 1, 2
-        # save_status = {(x, y): False for x in range(row) for y in range(col)}
-        
         while self.running:
             self.timer.tick(FPS)
             if self.player.counter < 19:
@@ -522,11 +512,8 @@ class Game:
             self.player.turns_allowed = self.player.check_position(boards)
             if self.player.moving:  
                 self.player.move_player()
-            self.blinky.move_towards_player(self.player, boards, AStar)
-            self.clyde.move_towards_player(self.player, boards, UCS)
-            self.pinky.move_towards_player(self.player, boards, IDS)
-            self.inky.move_towards_player(self.player, boards, BFS)
-                        
+            self.clyde.move_towards_player(self.player, boards, IDS)
+            # self.pinky.move_towards_player(self.player, boards, IDS)
             self.player.check_collision()
             self.board.draw_misc()
             self.handle_events()
@@ -577,3 +564,39 @@ if __name__ == "__main__":
     numberColMatrix = 30
     game = Game(numberRowMatrix, numberColMatrix, player_x, player_y)
     game.run()
+
+
+# def DFS(arr2D, start, end):
+#     if start == end:
+#         return
+#     if( arr2D[end[0]][end[1]] == 1):
+#         return
+#     path = []
+#     stack =[]
+#     visited = []
+#     stack.append(start)
+#     parent = {}
+    
+#     while len(stack) != 0:
+#         now = stack.pop()
+#         visited.append(now)
+#         if now == end:
+#             break
+#         dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+#         for d in dir:
+#              node = [now[0] + d[0], now[1] + d[1]]
+#              if node[0] >= 0 and node[0] < len(arr2D) and node[1] >= 0 and node[1] < len(arr2D[0]):
+#                 if node not in visited and arr2D[now[0] + d[0]][now[1] + d[1]] != 1:
+#                     stack.append(node)
+#                     parent[tuple(node)] = tuple(now)
+    
+#     path.append(end)
+
+#     node = end
+#     while node != None:
+#         path.append(parent.get(tuple(node)))
+#         node = parent.get(tuple(node))
+
+#     path.pop()
+#     path.reverse()
+#     return path
