@@ -1,0 +1,26 @@
+from collections import deque 
+import utils 
+
+
+def BFS(matrix, start, end):
+    row_start, col_start = start
+    row_end, col_end = end
+    rows, cols = len(matrix), len(matrix[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Lên, xuống, trái, phải
+    if matrix[row_start][col_start] in range(3, 9) or matrix[row_end][col_end] in range(3, 9) or utils.ghost_status[row_start][col_start] == 1 or utils.ghost_status[row_end][col_end] == 1:
+        return None
+    queue = deque([(row_start, col_start, [])])
+    visited = set()
+    visited.add((row_start, col_start))
+    while queue:
+        x, y, path = queue.popleft()
+        # Nếu đến đích, trả về đường đi
+        if (x, y) == (row_end, col_end):
+            return path + [(x, y)]
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited:
+                if matrix[nx][ny] in (0, 1, 2,  9) and utils.ghost_status[nx][ny] == 0:  # Sửa điều kiện này
+                    visited.add((nx, ny))
+                    queue.append((nx, ny, path + [(x, y)]))
+    return None  # Không tìm thấy đường đi

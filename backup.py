@@ -1,14 +1,50 @@
 import pygame
 import queue
-from collections import deque
+from collections import deque 
 import math
 from const import *
 from board import boards
 import os
-
-
-def bfs(matrix, row_start, col_start, row_end, col_end):
+from queue import PriorityQueue 
+def DFS(arr2D, start, end):
+    if start == end:
+        return
+    if( arr2D[end[0]][end[1]] != 1 and  arr2D[end[0]][end[1]] != 0 and  arr2D[end[0]][end[1]] != 9 ):
+        return
+    path = []
+    stack =[]
+    visited = []
+    stack.append(start)
+    parent = {}
     
+    while len(stack) != 0:
+        now = stack.pop()
+        visited.append(now)
+        if now == end:
+            break
+        dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        for d in dir:
+             node = [now[0] + d[0], now[1] + d[1]]
+             if node[0] >= 0 and node[0] < len(arr2D) and node[1] >= 0 and node[1] < len(arr2D[0]):
+                if node not in visited and (arr2D[now[0] + d[0]][now[1] + d[1]] == 1 or arr2D[now[0] + d[0]][now[1] + d[1]] == 0 or arr2D[now[0] + d[0]][now[1] + d[1]] == 9):
+                    stack.append(node)
+                    parent[tuple(node)] = tuple(now)
+    
+    path.append(tuple(end))
+
+    node = end
+    while node != None:
+        path.append(parent.get(tuple(node)))
+        node = parent.get(tuple(node))
+
+    path.pop()
+    path.reverse()
+    return path
+
+
+def bfs(matrix, start, end):
+    row_start, col_start = start
+    row_end, col_end = end
     rows, cols = len(matrix), len(matrix[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Lên, xuống, trái, phải
     
@@ -33,7 +69,50 @@ def bfs(matrix, row_start, col_start, row_end, col_end):
                     queue.append((nx, ny, path + [(x, y)]))
     
     return None  # Không tìm thấy đường đi
+def Heuristic(start, end):
+    return abs(end[1] - start[1]) + abs(end[0] - start[0])
 
+
+def AStar(grid, start, end):
+    row, col = len(grid), len(grid[0])
+    visited = {(x, y): False for x in range(row) for y in range(col)}
+    path = []
+    queue = PriorityQueue()
+    parent = {}
+    cost = {}
+    direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+    
+    cost[start] = 0
+    queue.put((Heuristic(start, end), start))
+    
+    while not queue.empty():
+        current_weight, current_index = queue.get()
+        x, y = current_index
+        
+        if visited[(x, y)]:
+            continue
+        visited[(x, y)] = True
+        
+        if current_index == end:
+            path.append((x, y))
+            while current_index in parent:
+                current_index = parent[current_index]
+                path.append(current_index)
+            path.reverse()
+            return path
+        
+        for dx, dy in direction:
+            new_x, new_y = x + dx, y + dy
+            
+            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 9):
+                new_cost = cost[current_index] + 1
+                if (new_x, new_y) not in cost or new_cost < cost[(new_x, new_y)]:
+                    cost[(new_x, new_y)] = new_cost
+                    priority = new_cost + Heuristic((new_x, new_y), end)
+                    queue.put((priority, (new_x, new_y)))
+                    parent[(new_x, new_y)] = current_index
+    
+    return None
 def convert_coordinates(center_x, center_y):
     num1 = (HEIGHT - 50) // 32
     num2 = WIDTH // 30
@@ -61,38 +140,34 @@ class Board:
             for j in range(len(self.level[i])):
                 x, y = j * self.num2, i * self.num1
                 cx, cy = x + 0.5 * self.num2, y + 0.5 * self.num1
-                if self.level[i][j] == 1:
+                if self.level[i][j] == DOT:
                         pygame.draw.circle(self.screen, self.colorCircle, (cx, cy), self.WIDTH_SMALL_CIRCLE_BOARD)
-                elif self.level[i][j] == 2 and not flicker:
+                elif self.level[i][j] == BIG_DOT and not flicker:
                         pygame.draw.circle(self.screen, self.colorCircle, (cx, cy), self.WIDTH_BIG_CIRCLE_BOARD)
-                elif self.level[i][j] == 3:
+                elif self.level[i][j] == VERTICAL_LINE:
                         pygame.draw.line(self.screen, self.colorLine, (cx, y), (cx, y + self.num1), self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 4:
+                elif self.level[i][j] == HORIZONTAL_LINE:
                         pygame.draw.line(self.screen, self.colorLine, (x, cy), (x + self.num2, cy), self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 5:
+                elif self.level[i][j] == TOP_RIGHT:
                         pygame.draw.arc(self.screen, self.colorLine, [(x - 0.4 * self.num2) - 2, y + 0.5 * self.num1, self.num2, self.num1], 0, self.PI / 2, self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 6:
+                elif self.level[i][j] == TOP_LEFT:
                         pygame.draw.arc(self.screen, self.colorLine, [(x + 0.5 * self.num2), y + 0.5 * self.num1, self.num2, self.num1], self.PI / 2, self.PI, self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 7:
+                elif self.level[i][j] == BOT_LEFT:
                         pygame.draw.arc(self.screen, self.colorLine, [(x + 0.5 * self.num2), y - 0.4 * self.num1, self.num2, self.num1], self.PI, 3 * self.PI / 2, self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 8:
+                elif self.level[i][j] == BOT_RIGHT:
                         pygame.draw.arc(self.screen, self.colorLine, [(x - 0.4 * self.num2) - 2, y - 0.4 * self.num1, self.num2, self.num1], 3 * self.PI / 2, 2 * self.PI, self.WIDTH_LINE_BOARD)
-                elif self.level[i][j] == 9:
+                elif self.level[i][j] == GATE:
                         pygame.draw.line(self.screen, self.colorCircle, (x, cy), (x + self.num2, cy), self.WIDTH_LINE_BOARD)
     
     def draw_misc(self):
         score_text = self.font.render(f'Score: {self.player.score}', True, 'white')
         self.screen.blit(score_text, (10, HEIGHT - 30))
         
-        # Hiển thị trạng thái power-up nếu có trạng thái power-up thì hiển thị một hình tròn màu xanh
-        if self.player.power_up:
-            pygame.draw.circle(self.screen, 'blue', (200, HEIGHT - 20), 10)
 
         
         # Hiển thị mạng còn sống của player
         for i in range(self.player.lives):
-            self.screen.blit(pygame.transform.scale(self.player.images[0], (25, 25)), (400 + (i * 40), HEIGHT - 40))
-        
+            self.screen.blit(pygame.transform.scale(self.player.images[0], (25, 25)), (WIDTH - (self.player.lives + 2) * WIDTH_LIVES + (i * WIDTH_LIVES), HEIGHT - WIDTH_LIVES))
 
 class Player: 
     def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix):
@@ -259,7 +334,6 @@ class Ghost:
         self.eaten = False
         self.dead_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/dead.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.spooked_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/powerup.png'), (WIDTH_GHOST, HEIGHT_GHOST))
-        self.turns, self.in_box = self.check_collisions()
         self.rect = self.draw(player)
         
     def draw(self, player):
@@ -271,10 +345,6 @@ class Ghost:
             self.screen.blit(self.dead_img, (self.x_pos, self.y_pos))
         ghost_rect = pygame.rect.Rect((self.center_x - 18, self.center_y - 18), (36, 36))
         return ghost_rect
-    def check_collisions(self): 
-        self.turns = [False, False, False, False]
-        self.in_box = True
-        return self.turns, self.in_box
     
     def convert_coordinates(self, center_x, center_y):
         num1 = (HEIGHT - 50) // 32
@@ -282,19 +352,19 @@ class Ghost:
         x_coordinate = center_x // num2
         y_coordinate = center_y // num1
         return x_coordinate, y_coordinate
-    def BFS_Algorithm(self, player, level):
+    def getPath(self, player, level, name_algorithm):
         center_player_x, center_player_y = player.get_center()
         player_x_coord, player_y_coord = convert_coordinates(center_player_x, center_player_y)
         ghost_x_coord, ghost_y_coord = convert_coordinates(self.center_x, self.center_y)
         
-        path = bfs(level,  ghost_y_coord, ghost_x_coord, player_y_coord, player_x_coord)
+        path = name_algorithm(level,  (ghost_y_coord, ghost_x_coord), (player_y_coord, player_x_coord))
         print("Player:", player_x_coord, player_y_coord)
         print("Ghost:", ghost_x_coord, ghost_y_coord)
         return path; 
     
-    def move_towards_player(self, player, level):
+    def move_towards_player(self, player, level, name_algorithm):
         print("START", self.center_x, self.center_y)
-        path = self.BFS_Algorithm(player, level)
+        path = self.getPath(player, level, name_algorithm)
         print("Path: ", path)
         ghost_x_coord, ghost_y_coord = self.convert_coordinates(self.center_x, self.center_y)
         if (path and len(path) >= 2):
@@ -399,7 +469,8 @@ class Game:
             self.player.turns_allowed = self.player.check_position(boards)
             if self.player.moving:  
                 self.player.move_player()
-            self.clyde.move_towards_player(self.player, boards)
+            self.clyde.move_towards_player(self.player, boards, AStar)
+            self.pinky.move_towards_player(self.player, boards, bfs)
             self.player.check_collision()
             self.board.draw_misc()
             self.handle_events()
@@ -451,38 +522,3 @@ if __name__ == "__main__":
     game = Game(numberRowMatrix, numberColMatrix, player_x, player_y)
     game.run()
 
-
-# def DFS(arr2D, start, end):
-#     if start == end:
-#         return
-#     if( arr2D[end[0]][end[1]] == 1):
-#         return
-#     path = []
-#     stack =[]
-#     visited = []
-#     stack.append(start)
-#     parent = {}
-    
-#     while len(stack) != 0:
-#         now = stack.pop()
-#         visited.append(now)
-#         if now == end:
-#             break
-#         dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-#         for d in dir:
-#              node = [now[0] + d[0], now[1] + d[1]]
-#              if node[0] >= 0 and node[0] < len(arr2D) and node[1] >= 0 and node[1] < len(arr2D[0]):
-#                 if node not in visited and arr2D[now[0] + d[0]][now[1] + d[1]] != 1:
-#                     stack.append(node)
-#                     parent[tuple(node)] = tuple(now)
-    
-#     path.append(end)
-
-#     node = end
-#     while node != None:
-#         path.append(parent.get(tuple(node)))
-#         node = parent.get(tuple(node))
-
-#     path.pop()
-#     path.reverse()
-#     return path
