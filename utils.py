@@ -4,6 +4,9 @@ from Object.Ghost import Ghost
 from Object.Ghost import Blinky, Inky, Pinky, Clyde
 from Algorithm.BFS import BFS
 from Algorithm.AStar import AStar
+from Algorithm.UCS import UCS
+from Algorithm.IDS import IDS
+
 from const import *
 def getCenter(x, y, matrix):
     x = x + (WIDTH) // len(matrix[0]) // 2
@@ -29,7 +32,7 @@ def getGhosts(screen, player):
     return [blinky, inky, pinky, clyde]
 
 def getAlgorithm():
-    return [BFS, BFS, AStar, AStar]
+    return [BFS, IDS, UCS, AStar]
 
 
 def isValidToRight(center_x, center_y, domain, validValues): 
