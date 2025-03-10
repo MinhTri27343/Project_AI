@@ -1,6 +1,7 @@
 import pygame
 from const import *
 from board import boards
+from Algorithm.IDS import queue_max
 # from utils import utils.convert_coordinates, utils.ghost_status
 import utils
 class Blinky: 
@@ -97,6 +98,8 @@ class Ghost:
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
+            if path[0] not in queue_max:
+                queue_max.append(path[0])
             next_i, next_j = path[1]
             mark = False
             if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):

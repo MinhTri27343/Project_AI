@@ -1,7 +1,7 @@
 import utils
 from collections import deque
 from const import *
-queue_max = deque(maxlen= 5)
+queue_max = deque(maxlen= 10)
 def IDS(arr2D, start, end):
     def DLS(arr2D, start, end, max_depth):
         stack = [(start, [tuple(start)], 0)]  #[now , path, depth]
@@ -34,7 +34,7 @@ def IDS(arr2D, start, end):
     
      
     depth = 0
-    depth_limit = rows*cols
+    depth_limit = rows
    
     while depth <= depth_limit:
         result = DLS(arr2D, start, end, depth)

@@ -7,7 +7,7 @@ class Menu:
         self.width, self.height = self.background.get_size()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Background Example")
-    def exec(self):
+    def execute(self):
         running = True
         self.screen.blit(self.background, (0, 0)) #Display background
         pygame.display.flip()  # Cập nhật màn hình
@@ -15,8 +15,6 @@ class Menu:
 
         font_name = pygame.font.Font(None, 50)
         font_level = pygame.font.Font(None, 70)
-        WHITE = (255, 255, 255)
-        BLACK = (0, 0, 0)
         COLOR_INPUT_NAME = (252, 218, 111)
 
         # Kích thước và vị trí của ô nhập
@@ -60,6 +58,7 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    return["", 0, False]
 
                 # Kiểm tra khi click chuột vào ô nhập
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -97,5 +96,5 @@ class Menu:
             # Cập nhật màn hình
             pygame.display.flip()
         #================End while=================================================
-        
-        return [user_text, index_level]
+       
+        return [user_text, index_level, True]

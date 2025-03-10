@@ -3,7 +3,7 @@ from const import *
 from board import boards 
 from EndGame.EndGameScreen import EndGameScreen
 from Algorithm.BFS import BFS
-from Leaderboard.LeaderBoard import LeaderBoard
+from Menu.Menu import Menu
 import utils
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
@@ -27,10 +27,14 @@ class Game:
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
         self.player = setUp.player
         self.board = setUp.board
-        self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
+   
+   
         
     def run(self):
         while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
             self.timer.tick(FPS)
             if self.player.counter < 19:
                 self.player.counter += 1
@@ -73,7 +77,6 @@ class Game:
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
                 elif (self.ghosts[i].dead == True): 
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
-                
             self.player.check_collision()
             self.player.check_collision_no_power_up(self.ghosts)
             self.player.eat_ghost(self.ghosts)
@@ -82,21 +85,20 @@ class Game:
             if (self.player.isGameOver() == True):
                 self.gameOver = True
                 self.gameOverScreen.animate_text()
-                self.leaderboard.save_rank()
-                self.leaderboard.show_rank()
             elif (utils.isWinGame(boards) == True):
                 self.win = True
                 self.gameWinScreen.animate_text()
-                self.leaderboard.save_rank()
-                self.leaderboard.show_rank()
-            self.handle_events()
+            out = self.handle_events()
+            if out == False:
+                return False
             pygame.display.flip()
-        pygame.quit()
+        return True
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                self.running = False 
+                return False
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -129,5 +131,8 @@ class Game:
                  self.player.direction = DOWN
             # Nếu game over nhấn phím bất kỳ để thoát 
             if self.gameOver or self.win:
-                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
-                    self.running = False  # Nhấn phím bất kỳ để thoát
+                if event.type == pygame.QUIT:
+                    return False
+                if event.type == pygame.KEYDOWN:
+                    self.running = False  # Nhấn phím bất kỳ để 
+                    return True
