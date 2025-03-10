@@ -2,6 +2,7 @@
 WIDTH: int = 600
 HEIGHT: int = 634
 FPS: int = 60
+FONT_SIZE: int = 30
 
 # DIRECTION - PLAYER
 RIGHT: int = 0
@@ -55,4 +56,12 @@ GATE: int = 9
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # DISTANCE 
-DISTANCE_COLLISION: int = 10
+DISTANCE_COLLISION: int = 25
+
+#Rank file
+RANK_FILE="assets/File/rank.json"
+BG_LEADERBOARD="assets/background_images/background_rank.png"
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)

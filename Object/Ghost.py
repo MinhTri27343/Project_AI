@@ -70,6 +70,7 @@ class Ghost:
         self.y_pos = self.y_origin
         self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)
         self.dead = False
+        utils.ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
         
     def draw(self, player):
         if (not player.power_up and not self.dead) or (self.eaten and player.power_up and not self.dead):

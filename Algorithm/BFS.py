@@ -21,7 +21,7 @@ def BFS(matrix, start, end):
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             if 0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited:
-                if matrix[nx][ny] in (0, 1, 2,  9) and utils.ghost_status[nx][ny] == 0:  # Sửa điều kiện này
+                if matrix[nx][ny] in (0, 1, 2, 9) and utils.ghost_status[nx][ny] == 0:  # Sửa điều kiện này
                     visited.add((nx, ny))
                     queue.append((nx, ny, path + [(x, y)]))
     return None  # Không tìm thấy đường đi

@@ -3,6 +3,7 @@ from const import *
 from board import boards 
 from EndGame.EndGameScreen import EndGameScreen
 from Algorithm.BFS import BFS
+from Leaderboard.LeaderBoard import LeaderBoard
 import utils
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
@@ -24,9 +25,9 @@ class Game:
 
         for i in range(1, 5):
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
-
         self.player = setUp.player
         self.board = setUp.board
+        self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
         
     def run(self):
         while self.running:
@@ -81,9 +82,13 @@ class Game:
             if (self.player.isGameOver() == True):
                 self.gameOver = True
                 self.gameOverScreen.animate_text()
+                self.leaderboard.save_rank()
+                self.leaderboard.show_rank()
             elif (utils.isWinGame(boards) == True):
                 self.win = True
                 self.gameWinScreen.animate_text()
+                self.leaderboard.save_rank()
+                self.leaderboard.show_rank()
             self.handle_events()
             pygame.display.flip()
         pygame.quit()

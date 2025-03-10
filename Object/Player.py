@@ -29,7 +29,7 @@ class Player:
         self.startup_counter = 0
         self.circle = pygame.draw.circle(self.screen, "red", (self.x + self.width // 2, self.y + self.height // 2), 1, 1)
         self.gameOver = False
-        
+        self.name = "Anonymous"
         
     def resetIntoDefault(self):
         self.startup_counter = 0

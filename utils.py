@@ -33,7 +33,7 @@ def getGhosts(screen, player):
 
 def getAlgorithm():
     # return [BFS, IDS, UCS, AStar]
-    return [BFS, BFS, AStar, AStar]
+    return [BFS, UCS, AStar, AStar]
 
 
 def isValidToRight(center_x, center_y, domain, validValues): 
