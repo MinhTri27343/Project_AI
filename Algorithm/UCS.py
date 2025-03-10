@@ -8,7 +8,7 @@ def UCS(arr2D, start, end):
         else: return 1
     if start == end:
         return None
-    if arr2D[start[0]][start[1]] not in utils.VALID_VALUES_GHOST  or arr2D[end[0]][end[1]] not in  utils.VALID_VALUES_GHOST  or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[start[1]][end[1]] == 1:
+    if arr2D[start[0]][start[1]] not in utils.VALID_VALUES_GHOST  or arr2D[end[0]][end[1]] not in  utils.VALID_VALUES_GHOST  or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
         return None
     
     rows, cols = len(arr2D), len(arr2D[0])
