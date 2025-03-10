@@ -1,106 +1,75 @@
+import pygame
 import time
-from queue import PriorityQueue
-from collections import deque
-def Heuristic(start, end):
-    return abs(end[1] - start[1]) + abs(end[0] - start[0])
+import tracemalloc
 
+# Khởi tạo pygame
+pygame.init()
+WIDTH, HEIGHT = 800, 600  # Có thể thay đổi kích thước tùy ý
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Search Algorithm Statistics")
+pygame.font.init()
 
-def AStar(grid, start, end):
-    visited = {(x, y): False for x in range(row) for y in range(col)}
-    path = []
-    row, col = len(grid), len(grid[0])
-    queue = PriorityQueue()
-    parent = {}
-    cost = {}
-    direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+# Font chữ
+font = pygame.font.Font(None, 40)
+font_bold = pygame.font.Font(None, 50)
+
+# Đo thời gian & bộ nhớ
+tracemalloc.start()
+start_time = time.time()
+time.sleep(0.002)  # Giả lập thuật toán tìm kiếm
+search_time = time.time() - start_time
+current_memory, peak_memory = tracemalloc.get_traced_memory()
+tracemalloc.stop()
+
+# Màu sắc
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BACKGROUND_COLOR = (128, 0, 128)  # Màu tím (Purple)
+
+def draw_text(screen, text, center_x, y, font, color=BLACK):
+    """Vẽ text căn giữa theo trục X."""
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=(center_x, y))
+    screen.blit(text_surface, text_rect)
+
+def draw_statistics(screen, search_time, memory_usage, expanded_nodes):
+    """Vẽ các thông số thuật toán lên screen (căn giữa tự động)."""
+    screen.fill(BACKGROUND_COLOR)  # Xóa màn hình trước khi vẽ lại
+
+    # Lấy kích thước màn hình
+    WIDTH, HEIGHT = screen.get_size()
     
-    cost[start] = 0
-    queue.put((Heuristic(start, end), start))
+    # Vị trí của tiêu đề
+    title = "Search Algorithm Statistics"
+    draw_text(screen, title, WIDTH // 2, HEIGHT * 0.2, font_bold)
+
+    # Danh sách thông tin
+    labels = ["Search Time:", "Memory Usage:", "Expanded Nodes:"]
+    values = [
+        f"{search_time:.6f} seconds",
+        f"{memory_usage / 1024:.2f} KB",
+        f"{expanded_nodes}"
+    ]
     
-    while not queue.empty():
-        current_weight, current_index = queue.get()
-        x, y = current_index
-        
-        if visited[(x, y)]:
-            continue
-        visited[(x, y)] = True
-        
-        if current_index == end:
-            path.append((x, y))
-            while current_index in parent:
-                current_index = parent[current_index]
-                path.append(current_index)
-            path.reverse()
-            return path
-        
-        for dx, dy in direction:
-            new_x, new_y = x + dx, y + dy
-            
-            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 9):
-                new_cost = cost[current_index] + 1
-                if (new_x, new_y) not in cost or new_cost < cost[(new_x, new_y)]:
-                    cost[(new_x, new_y)] = new_cost
-                    priority = new_cost + Heuristic((new_x, new_y), end)
-                    queue.put((priority, (new_x, new_y)))
-                    parent[(new_x, new_y)] = current_index
-    
-    return None
-def bfs(matrix, x_start, y_start, x_end, y_end, can_move):
-    rows, cols = len(matrix), len(matrix[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
-    queue = deque([(x_start, y_start, [])])
-    visited = set()
-    visited.add((x_start, y_start))
+    # Vị trí bắt đầu hiển thị nội dung, căn giữa
+    start_y = HEIGHT * 0.4  # Bắt đầu từ 40% chiều cao màn hình
+    y_offset = HEIGHT * 0.1  # Khoảng cách giữa các dòng (10% chiều cao)
 
-    while queue:
-        x, y, path = queue.popleft()
+    # for i in range(len(labels)):
+    #     draw_text(screen, labels[i], WIDTH * 0.4, start_y + i * y_offset, font)
+    #     draw_text(screen, values[i], WIDTH * 0.6, start_y + i * y_offset, font)
 
-        if (x, y) == (x_end, y_end):
-            return path + [(x, y)]
+    pygame.display.flip()  # Cập nhật màn hình
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < rows and 0 <= ny < cols and (nx, ny) not in visited:
-                if can_move(matrix[nx][ny]):
-                    visited.add((nx, ny))
-                    queue.append((nx, ny, path + [(x, y)]))
+# Hiển thị kết quả
+draw_statistics(screen, search_time, peak_memory, 45)
 
-    return None
+# Vòng lặp sự kiện
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    pygame.time.delay(10)
 
-# Hàm kiểm tra có thể di chuyển qua ô không
-def is_valid(value):
-    return value in (0, 1, 9)
-
-# Giả lập quá trình di chuyển của con ma
-def move_ghost(matrix, ghost_x, ghost_y, pacman_x, pacman_y, speed=2, delay=1):
-    while (ghost_x, ghost_y) != (pacman_x, pacman_y):
-        path = AStar(matrix, (ghost_x, ghost_y), (pacman_x, pacman_y), is_valid)
-        print("Path: ", path)
-        if not path or len(path) == 1:
-            print("Con ma không thể đến Pacman!")
-            break
-        
-        # Chọn bước tiếp theo theo tốc độ speed
-        steps = min(speed, len(path) - 1)  # Không vượt quá đường đi có sẵn
-        ghost_x, ghost_y = path[steps]
-
-        # In vị trí con ma
-        print(f"Con ma di chuyển đến: ({ghost_x}, {ghost_y})")
-        
-        time.sleep(delay)  # Tạo hiệu ứng di chuyển
-
-    print("Con ma đã đến Pacman!")
-
-# Ví dụ ma trận
-maze = [
-    [0, 1, 2, 0],
-    [0, 2, 0, 9],
-    [1, 0, 0, 0],
-    [2, 9, 2, 0]
-]
-
-# Vị trí ban đầu
-ghost_x, ghost_y = 0, 0
-pacman_x, pacman_y = 3, 3
-
-move_ghost(maze, ghost_x, ghost_y, pacman_x, pacman_y, speed=2, delay=0.5)
+pygame.quit()

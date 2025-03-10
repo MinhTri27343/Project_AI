@@ -1,8 +1,8 @@
 from queue import PriorityQueue
 import utils
+
 def Heuristic(start, end):
     return abs(end[1] - start[1]) + abs(end[0] - start[0])
-
 
 def AStar(grid, start, end):
     row, col = len(grid), len(grid[0])
@@ -12,8 +12,11 @@ def AStar(grid, start, end):
     parent = {}
     cost = {}
     direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+    expand_nodes = 0  # Biến đếm số lượng node mở rộng
+    
     if grid[start[0]][start[1]] not in utils.VALID_VALUES_GHOST or grid[end[0]][end[1]] not in utils.VALID_VALUES_GHOST or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
-        return None
+        return None, 0
+    
     cost[start] = 0
     queue.put((Heuristic(start, end), start))
     
@@ -24,6 +27,7 @@ def AStar(grid, start, end):
         if visited[(x, y)]:
             continue
         visited[(x, y)] = True
+        expand_nodes += 1  # Tăng số node mở rộng
         
         if current_index == end:
             path.append((x, y))
@@ -31,7 +35,7 @@ def AStar(grid, start, end):
                 current_index = parent[current_index]
                 path.append(current_index)
             path.reverse()
-            return path
+            return path, expand_nodes  # Trả về cả đường đi và số node mở rộng
         
         for dx, dy in direction:
             new_x, new_y = x + dx, y + dy
@@ -48,4 +52,4 @@ def AStar(grid, start, end):
                     queue.put((priority, (new_x, new_y)))
                     parent[(new_x, new_y)] = current_index
     
-    return None
+    return None, expand_nodes  # Nếu không tìm thấy đường đi, vẫn trả về số node mở rộng

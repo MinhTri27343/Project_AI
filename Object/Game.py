@@ -8,7 +8,6 @@ class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
         self.screen = setUp.screen
         self.timer = setUp.timer
-       
         self.running = True
         self.player_images = []
         self.numberRowMatrix = len(boards)
@@ -21,6 +20,7 @@ class Game:
         self.gameOverScreen = EndGameScreen("GAME OVER")
         self.win = False
         self.gameWinScreen = EndGameScreen("YOU WIN")
+        
 
         for i in range(1, 5):
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
@@ -67,11 +67,12 @@ class Game:
                 self.player.move_player()
             
             
+            
             for i in range(len(self.ghosts)):
                 if (self.ghosts[i].dead == False):
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
                 elif (self.ghosts[i].dead == True): 
-                    self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
+                    self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player) # TODO: Fix BFS, IDS, UCS, AStar
                 
             self.player.check_collision()
             self.player.check_collision_no_power_up(self.ghosts)

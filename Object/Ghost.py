@@ -1,4 +1,6 @@
 import pygame
+import tracemalloc
+import time
 from const import *
 from board import boards
 # from utils import utils.convert_coordinates, utils.ghost_status
@@ -64,6 +66,9 @@ class Ghost:
         self.dead_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/dead.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.spooked_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/powerup.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.rect = self.draw(player)
+        self.isCalculateAlgorithmTime = False
+        self.search_time = 0
+        self.expand_nodes = 0
         
     def resetIntoDefault(self):
         self.x_pos = self.x_origin
@@ -81,19 +86,34 @@ class Ghost:
         ghost_rect = pygame.rect.Rect((self.center_x - 18, self.center_y - 18), (36, 36))
         return ghost_rect
     
-    def getPath(self, end , level, name_algorithm):
+    def getPathAndExpandNodes(self, end , level, name_algorithm):
         center_x, center_y = end
         player_j_coord, player_i_coord = utils.convert_coordinates(center_x, center_y)
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         
-        path = name_algorithm(level,  (ghost_i_coord, ghost_j_coord), (player_i_coord, player_j_coord))
-        return path; 
+        path, expand_nodes = name_algorithm(level,  (ghost_i_coord, ghost_j_coord), (player_i_coord, player_j_coord))
+        
+        return path, expand_nodes; 
+    
+    # Them tinh nag de lay expand node, search_time., peak_memory
     def move_towards_end_pos(self, end_center, level, name_algorithm, player):
         end_center_x, end_center_y = end_center
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         utils.ghost_status[ghost_i_coord][ghost_j_coord] = 0
-        path = self.getPath((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
+        start_time = time.time()
+        tracemalloc.start()  # Bắt đầu theo dõi bộ nhớ
+        path, expand_nodes = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) 
+        current, peak_memory = tracemalloc.get_traced_memory()   
         heightCell = (HEIGHT - 50) // len(level)
+        end_time = time.time()
+        print(f"Current memory usage is {current / 10**6}MB; Peak was {peak_memory / 10**6}MB")
+        if (self.isCalculateAlgorithmTime == False):
+            self.search_time = end_time - start_time
+            self.isCalculateAlgorithmTime = True
+            self.expand_nodes = expand_nodes
+        
+        print("Time to search: ", self.search_time)
+        print("Number of expand nodes: ", self.expand_nodes)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
             next_i, next_j = path[1]
