@@ -70,12 +70,11 @@ class Game:
             for i in range(len(self.ghosts)):
                 if (self.ghosts[i].dead == False):
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
-                else: 
+                elif (self.ghosts[i].dead == True): 
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
                 
             self.player.check_collision()
             self.player.check_collision_no_power_up(self.ghosts)
-            # self.player.check_collision_with_eaten_ghost(self.ghosts)
             self.player.eat_ghost(self.ghosts)
             
             self.board.draw_misc()

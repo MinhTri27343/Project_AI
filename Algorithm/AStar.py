@@ -1,6 +1,5 @@
-from queue import PriorityQueue 
+from queue import PriorityQueue
 import utils
-from const import *
 def Heuristic(start, end):
     return abs(end[1] - start[1]) + abs(end[0] - start[0])
 
@@ -12,7 +11,7 @@ def AStar(grid, start, end):
     queue = PriorityQueue()
     parent = {}
     cost = {}
-    direction = DIRECTIONS
+    direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
     if grid[start[0]][start[1]] not in utils.VALID_VALUES_GHOST or grid[end[0]][end[1]] not in utils.VALID_VALUES_GHOST or utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
         return None
     cost[start] = 0
@@ -37,8 +36,12 @@ def AStar(grid, start, end):
         for dx, dy in direction:
             new_x, new_y = x + dx, y + dy
             
-            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 9) and utils.ghost_status[new_x][new_y] == 0:
-                new_cost = cost[current_index] + 1
+            if 0 <= new_x < row and 0 <= new_y < col and not visited[(new_x, new_y)] and grid[new_x][new_y] in (0, 1, 2, 9) and utils.ghost_status[new_x][new_y] == 0:
+                new_cost = 0
+                if parent.get((x, y)) and parent[(x, y)][0] != new_x and parent[(x, y)][1] != new_y:
+                    new_cost = cost[current_index] + 1.5
+                else:
+                    new_cost = cost[current_index] + 1
                 if (new_x, new_y) not in cost or new_cost < cost[(new_x, new_y)]:
                     cost[(new_x, new_y)] = new_cost
                     priority = new_cost + Heuristic((new_x, new_y), end)

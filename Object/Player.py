@@ -2,6 +2,7 @@ import pygame
 from const import *
 from board import boards 
 import utils
+import math
 from Algorithm.BFS import BFS
 class Player: 
     def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix):
@@ -26,7 +27,7 @@ class Player:
         self.lives = NUMBER_LIVES
         self.moving = False
         self.startup_counter = 0
-        self.circle = pygame.draw.circle(self.screen, "red", (self.x + self.width // 2, self.y + self.height // 2), 20, 2)
+        self.circle = pygame.draw.circle(self.screen, "red", (self.x + self.width // 2, self.y + self.height // 2), 1, 1)
         self.gameOver = False
         
         
@@ -129,11 +130,11 @@ class Player:
             self.y += self.speed
             
     def check_collision_no_power_up(self, ghosts): 
-        if not self.power_up:
-            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
+       if not self.power_up:
+            center_x, center_y = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
-                ghost.rect.topleft = (ghost.center_x, ghost.center_y)
-                if self.circle.colliderect(ghost.rect) and not ghost.dead:
+                distance = math.sqrt((center_x - ghost.center_x) ** 2 + (center_y - ghost.center_y) ** 2)
+                if distance < DISTANCE_COLLISION and not ghost.dead:  
                     if self.lives > 0:
                         self.lives -= 1
                         self.resetIntoDefault()
@@ -144,30 +145,17 @@ class Player:
                         self.moving = False
                         self.startup_counter = 0
                     break
-    def check_collision_with_eaten_ghost(self, ghosts):
-        if self.power_up: 
-            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
-            for ghost in ghosts:
-                ghost.rect.topleft = (ghost.center_x, ghost.center_y)
-                if self.circle.colliderect(ghost.rect) and not ghost.dead and ghost.eaten:
-                    if self.lives > 0: 
-                        self.lives -= 1
-                        self.resetPlayer()
-                        ghost.resetGhost()
-                    else: 
-                        self.gameOver = True
-                        self.moving = False
-                        self.startup_counter = 0
-    
+
     def eat_ghost(self, ghosts):
+        center_x, center_y = utils.getCenter(self.x, self.y, boards)
         if self.power_up:
-            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
-                ghost.rect.topleft = (ghost.center_x, ghost.center_y)
-                if self.circle.colliderect(ghost.rect) and not ghost.dead and not ghost.eaten:
+                distance = math.sqrt((center_x - ghost.center_x) ** 2 + (center_y - ghost.center_y) ** 2)
+                if distance < DISTANCE_COLLISION and not ghost.dead and not ghost.eaten:  
                     ghost.eaten = True
                     self.score += SCORE_GHOST
                     ghost.dead = True
+
     
     def isGameOver(self):
         if (self.lives == 0):

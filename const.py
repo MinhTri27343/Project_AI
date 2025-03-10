@@ -53,3 +53,6 @@ GATE: int = 9
 
 # DIRECTION
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+# DISTANCE 
+DISTANCE_COLLISION: int = 10
