@@ -6,25 +6,30 @@ import utils
 class Blinky: 
     def __init__(self): 
         self.x = 320 
-        self.y = 250
+        self.y = 240
         self.direction = 0
         self.image = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/red.png'), (WIDTH_GHOST, HEIGHT_GHOST)) 
         self.id = ID_BLINKY
+        self.x_inBox = 320 
+        self.y_inBox = 250
         
         
 class Inky: 
     def __init__(self): 
         self.x = 260
-        self.y = 250 
+        self.y = 240 
         self.direction = 2
         self.image = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/blue.png'), (WIDTH_GHOST, HEIGHT_GHOST)) 
         self.id = ID_INKY
+        self.x_inBox = 260
+        self.y_inBox = 250
         
 class Pinky: 
     def __init__(self): 
         self.x = 250 
         self.y = 305
-        
+        self.x_inBox = 250
+        self.y_inBox = 270
         self.direction = 0
         self.image = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/pink.png'), (WIDTH_GHOST, HEIGHT_GHOST)) 
         self.id = ID_PINKY
@@ -33,16 +38,20 @@ class Clyde:
     def __init__(self): 
         self.x = 200 
         self.y = 220
+        self.x_inBox = 320
+        self.y_inBox = 270
         self.direction = 3
         self.image = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/orange.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.id = ID_CLYDE
 
 class Ghost:
-    def __init__(self, j_coord, i_coord, img, direct, id,  screen, player):
+    def __init__(self, j_coord, i_coord, img, direct, id,  screen, player, x_inBox, y_inBox):
         self.x_origin = j_coord
         self.y_origin = i_coord
         self.x_pos = j_coord
         self.y_pos = i_coord
+        self.x_inBox = x_inBox
+        self.y_inBox = y_inBox
         self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)
         self.speed = SPEED_GHOST
         self.img = img
@@ -72,44 +81,40 @@ class Ghost:
         ghost_rect = pygame.rect.Rect((self.center_x - 18, self.center_y - 18), (36, 36))
         return ghost_rect
     
-    def getPath(self, player, level, name_algorithm):
-        center_player_x, center_player_y = utils.getCenter(player.x, player.y, boards)
-        player_j_coord, player_i_coord = utils.convert_coordinates(center_player_x, center_player_y)
+    def getPath(self, end , level, name_algorithm):
+        center_x, center_y = end
+        player_j_coord, player_i_coord = utils.convert_coordinates(center_x, center_y)
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         
         path = name_algorithm(level,  (ghost_i_coord, ghost_j_coord), (player_i_coord, player_j_coord))
         return path; 
-    
-    def move_towards_player(self, player, level, name_algorithm):
-        ghost_x_coord, ghost_y_coord = utils.convert_coordinates(self.center_x, self.center_y)
-        utils.ghost_status[ghost_y_coord][ghost_x_coord] = 0
-        path = self.getPath(player, level, name_algorithm)
+    def move_towards_end_pos(self, end_center, level, name_algorithm, player):
+        end_center_x, end_center_y = end_center
+        ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
+        utils.ghost_status[ghost_i_coord][ghost_j_coord] = 0
+        path = self.getPath((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
-        # Tra ve trang thai cua bang truoc do
         if (path and len(path) >= 2):
             next_i, next_j = path[1]
-            ##cap nhat trang thai cua bang luc sau
-            # Ghost nay in nguoc
             mark = False
-            if next_j > ghost_x_coord:
-                
-                if heightCell // 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
+            if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
                     mark = True
                     self.center_x += self.speed
                     self.direction = RIGHT
-            elif next_j < ghost_x_coord:
-                if heightCell // 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
+            elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
                     mark = True
                     self.center_x -= self.speed
                     self.direction = LEFT
-            elif next_i > ghost_y_coord:
-                if widthCell // 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
+            elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
                     mark = True  
                     self.center_y += self.speed
                     self.direction = DOWN
-            elif next_i < ghost_y_coord:
-                if widthCell // 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
+            elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
                     mark = True
                     self.center_y -= self.speed
                     self.direction = UP
@@ -122,22 +127,30 @@ class Ghost:
                     self.center_y -= self.speed 
                 elif (self.direction == DOWN ) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):  
                     self.center_y += self.speed
-        elif (path and len(path) == 1 and not (player.x - SPEED_PLAYER < self.center_x < player.x + SPEED_PLAYER) and (player.y - SPEED_PLAYER < self.center_y < player.y + SPEED_PLAYER)):
-            
-            if (self.direction == RIGHT):
+        elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SPEED_GHOST < self.center_x < end_center_x + SPEED_GHOST and end_center_y - SPEED_GHOST < self.center_y < end_center_y + SPEED_GHOST)):
+            if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_x += self.speed
-            elif (self.direction == LEFT):
+            elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_y -= self.speed
-            elif (self.direction == UP):
+            elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_y -= self.speed
-            else: 
+            elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST): 
                 self.center_y += self.speed
-        self.x_pos = self.center_x - WIDTH_GHOST // 2
-        self.y_pos = self.center_y - HEIGHT_GHOST // 2
-        x_coord, y_coord = utils.convert_coordinates(self.center_x, self.center_y)
-        utils.ghost_status[y_coord][x_coord] = 1
+        elif (self.dead == True and path and len(path) == 1):
+            self.center_x = end_center_x
+            self.center_y = end_center_y
+            self.dead = False
+            self.eaten = False
+            player.power_up = False
+            return False
+            
+        self.x_pos = self.center_x - (HEIGHT - 50) // len(boards) // 2
+        self.y_pos = self.center_y - WIDTH // len(boards[0]) // 2
+        # print("Ghost pos origin: ", self.x_pos, self.y_pos)
+        j_coord, i_coord = utils.convert_coordinates(self.center_x, self.center_y)
+        utils.ghost_status[i_coord][j_coord] = 1
+        return True
         
-        # TEST
        
         
        

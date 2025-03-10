@@ -2,6 +2,7 @@ import pygame
 from const import *
 from board import boards 
 import utils
+from Algorithm.BFS import BFS
 class Player: 
     def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix):
         self.x = x
@@ -82,8 +83,6 @@ class Player:
         num1 = (HEIGHT - 50) // self.numberRowMatrix
         num2 = WIDTH // self.numberColMatrix
         num3 = min(num1, num2) // 2
-        heightCell = (HEIGHT - 50) // len(level)
-        widthCell = WIDTH // len(level[0])
         if center_x // self.numberColMatrix < self.numberColMatrix - 1:
             if self.direction == RIGHT and level[center_y // num1][(center_x - num3) // num2] in VALID_VALUES_PLAYER:
                 turns[LEFT] = True
@@ -134,7 +133,6 @@ class Player:
             self.circle.topleft = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
                 ghost.rect.topleft = (ghost.center_x, ghost.center_y)
-                # print(f"Pac-Man rect: {self.circle.topleft}, Ghost rect: {ghost.rect.topleft}")
                 if self.circle.colliderect(ghost.rect) and not ghost.dead:
                     if self.lives > 0:
                         self.lives -= 1
@@ -148,7 +146,9 @@ class Player:
                     break
     def check_collision_with_eaten_ghost(self, ghosts):
         if self.power_up: 
+            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
+                ghost.rect.topleft = (ghost.center_x, ghost.center_y)
                 if self.circle.colliderect(ghost.rect) and not ghost.dead and ghost.eaten:
                     if self.lives > 0: 
                         self.lives -= 1
@@ -161,7 +161,9 @@ class Player:
     
     def eat_ghost(self, ghosts):
         if self.power_up:
+            self.circle.topleft = utils.getCenter(self.x, self.y, boards)
             for ghost in ghosts:
+                ghost.rect.topleft = (ghost.center_x, ghost.center_y)
                 if self.circle.colliderect(ghost.rect) and not ghost.dead and not ghost.eaten:
                     ghost.eaten = True
                     self.score += SCORE_GHOST

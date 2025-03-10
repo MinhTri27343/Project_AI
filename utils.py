@@ -14,8 +14,8 @@ def getCenter(x, y, matrix):
     return (x, y)
 
 def convert_coordinates(center_x, center_y):
-    num1 = (HEIGHT - 50) // 33 
-    num2 = WIDTH // 30
+    num1 = (HEIGHT - 50) // len(boards) 
+    num2 = WIDTH // len(boards[0])
     x_coordinate = center_x // num2
     y_coordinate = center_y // num1
     return x_coordinate, y_coordinate
@@ -25,15 +25,15 @@ def getGhosts(screen, player):
     inkyInformation = Inky()
     pinkyInformation = Pinky()
     clydeInformation = Clyde()
-    blinky = Ghost(blinkyInformation.x, blinkyInformation.y, blinkyInformation.image, blinkyInformation.direction, blinkyInformation.id, screen, player)
-    inky = Ghost(inkyInformation.x, inkyInformation.y, inkyInformation.image, inkyInformation.direction, inkyInformation.id, screen, player)
-    pinky = Ghost(pinkyInformation.x, pinkyInformation.y, pinkyInformation.image, pinkyInformation.direction, pinkyInformation.id, screen, player)
-    clyde = Ghost(clydeInformation.x, clydeInformation.y, clydeInformation.image, clydeInformation.direction, clydeInformation.id, screen, player)
+    blinky = Ghost(blinkyInformation.x, blinkyInformation.y, blinkyInformation.image, blinkyInformation.direction, blinkyInformation.id, screen, player, blinkyInformation.x_inBox, blinkyInformation.y_inBox)
+    inky = Ghost(inkyInformation.x, inkyInformation.y, inkyInformation.image, inkyInformation.direction, inkyInformation.id, screen, player, inkyInformation.x_inBox, inkyInformation.y_inBox)
+    pinky = Ghost(pinkyInformation.x, pinkyInformation.y, pinkyInformation.image, pinkyInformation.direction, pinkyInformation.id, screen, player, pinkyInformation.x_inBox, pinkyInformation.y_inBox)
+    clyde = Ghost(clydeInformation.x, clydeInformation.y, clydeInformation.image, clydeInformation.direction, clydeInformation.id, screen, player, clydeInformation.x_inBox, clydeInformation.y_inBox)
     return [blinky, inky, pinky, clyde]
 
 def getAlgorithm():
     # return [BFS, IDS, UCS, AStar]
-    return [BFS, BFS, UCS, AStar]
+    return [BFS, BFS, AStar, AStar]
 
 
 def isValidToRight(center_x, center_y, domain, validValues): 
@@ -67,6 +67,13 @@ def isValidToDown(center_x, center_y, domain, validValues):
 def resetAllGhosts(ghosts): 
     for ghost in ghosts:
         ghost.reset()
+        
+def isWinGame(boards): 
+    for i in range(len(boards)):
+        for j in range(len(boards[0])):
+            if (boards[i][j] == 1):
+                return False
+    return True
 
 ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
 colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255), (0, 0, 255), (128, 0, 128)]

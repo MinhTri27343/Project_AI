@@ -2,6 +2,8 @@ import pygame
 from const import *
 from board import boards 
 from EndGame.EndGameScreen import EndGameScreen
+from Algorithm.BFS import BFS
+import utils
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
         self.screen = setUp.screen
@@ -64,17 +66,25 @@ class Game:
             if self.player.moving and self.moving:  
                 self.player.move_player()
             
+            
             for i in range(len(self.ghosts)):
-                self.ghosts[i].move_towards_player(self.player, boards, self.algorithms[i])
+                if (self.ghosts[i].dead == False):
+                    self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
+                else: 
+                    self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
                 
             self.player.check_collision()
             self.player.check_collision_no_power_up(self.ghosts)
-            self.player.check_collision_with_eaten_ghost(self.ghosts)
+            # self.player.check_collision_with_eaten_ghost(self.ghosts)
             self.player.eat_ghost(self.ghosts)
+            
             self.board.draw_misc()
             if (self.player.isGameOver() == True):
                 self.gameOver = True
                 self.gameOverScreen.animate_text()
+            elif (utils.isWinGame(boards) == True):
+                self.win = True
+                self.gameWinScreen.animate_text()
             self.handle_events()
             pygame.display.flip()
         pygame.quit()
@@ -114,6 +124,6 @@ class Game:
             if self.player.direction_command == DOWN and self.player.turns_allowed[DOWN]:
                  self.player.direction = DOWN
             # Nếu game over nhấn phím bất kỳ để thoát 
-            if self.gameOver:
+            if self.gameOver or self.win:
                 if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                     self.running = False  # Nhấn phím bất kỳ để thoát

@@ -33,7 +33,7 @@ if __name__ == "__main__":
     setUp = SetUpGame(boards)
     level1 = Level1(setUp, False)
     level2 = Level2(setUp, False)
-    level3 = Level3(setUp, False)
+    level3 = Level3(setUp, True)
     level4 = Level4(setUp, False)
     level5 = Level5(setUp, False)
     level6 = Level6(setUp, True)
@@ -41,3 +41,4 @@ if __name__ == "__main__":
     
     
 
+# TODO: Check đúng con ma và đúng thuật toán chưa 
