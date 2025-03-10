@@ -1,6 +1,7 @@
 import pygame
 from const import *
 from board import boards
+from Algorithm.IDS import queue_max
 # from utils import utils.convert_coordinates, utils.ghost_status
 import utils
 class Blinky: 
@@ -88,6 +89,8 @@ class Ghost:
         widthCell = WIDTH // len(level[0])
         # Tra ve trang thai cua bang truoc do
         if (path and len(path) >= 2):
+            if path[0] not in queue_max:
+                queue_max.append(path[0])
             next_i, next_j = path[1]
             ##cap nhat trang thai cua bang luc sau
             # Ghost nay in nguoc

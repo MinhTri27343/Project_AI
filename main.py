@@ -10,7 +10,7 @@ from Level.Level3 import Level3
 from Level.Level4 import Level4
 from Level.Level5 import Level5
 from Level.Level6 import Level6
-
+from Menu import Menu
 class SetUpGame: 
     def __init__(self, boards):
         pygame.init()
@@ -29,14 +29,26 @@ class SetUpGame:
     
 
 if __name__ == "__main__":
-    setUp = SetUpGame(boards)
-    level1 = Level1(setUp, False)
-    level2 = Level2(setUp, False)
-    level3 = Level3(setUp, False)
-    level4 = Level4(setUp, False)
-    level5 = Level5(setUp, False)
-    level6 = Level6(setUp, True)
-    level6.execute()
+    setup = SetUpGame(boards)
+    menu = Menu()
+    name_user , ind_level = menu.exec()
+    if ind_level == 0:
+        level1 = Level1(setup, False)
+        level1.execute()
+    if ind_level == 1:
+        level2 = Level2(setup, False)
+        level2.execute()
+    if ind_level == 2:
+        level3 = Level3(setup, False)
+        level3.execute()
+    if ind_level == 3:
+        level4 = Level4(setup, False)
+        level4.execute()
+    if ind_level == 4:
+        level5 = Level5(setup, False)
+        level5.execute()
+    if ind_level == 5:
+        level6 = Level6(setup, True)
+        level6.execute()
     
     
-
