@@ -7,5 +7,5 @@ class Level3:
         self.moving = setMoving
         self.game = Game(setUp, setMoving, self.ghosts, self.algorithms)
     def execute(self):
-        self.game.run()
+        return self.game.run()
         

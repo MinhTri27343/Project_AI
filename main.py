@@ -105,7 +105,7 @@ class SetUpGame:
             if ind_level == 5:
                 level6 = Level6(setup, True, name_user)
                 out = level6.execute()
-            if out != True:
+            if out == False:
                 break
             self.leaderboard.save_rank()
             
