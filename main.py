@@ -72,7 +72,7 @@ class SetUpGame:
         self.board = Board(boards, self.screen, len(boards), len(boards[0]), self.player, self.font)
         self.ghosts = getGhosts(self.screen, self.player)
         self.algorithms = getAlgorithm()
-        self.menu =Menu()
+        self.menu = Menu()
         self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
     def execute(self):
         running = True

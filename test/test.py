@@ -90,6 +90,54 @@ def move_ghost(matrix, ghost_x, ghost_y, pacman_x, pacman_y, speed=2, delay=1):
         time.sleep(delay)  # Tạo hiệu ứng di chuyển
 
     print("Con ma đã đến Pacman!")
+import utils
+from const import *
+queue_max = deque(maxlen=10)  # Hàng đợi chứa các trạng thái bị chặn
+
+def IDS(arr2D, start, end):
+    rows, cols = len(arr2D), len(arr2D[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Lên, xuống, trái, phải
+
+    def DLS(start, end, max_depth):
+        stack = [(start, [start], 0)]  # (vị trí hiện tại, đường đi, độ sâu)
+        expanded_nodes = 0
+
+        if end in queue_max:
+            return None, expanded_nodes
+
+        while stack:
+            now, path, depth = stack.pop()
+            expanded_nodes += 1
+
+            if now == end:
+                return path, expanded_nodes
+
+            if depth < max_depth:
+                for dx, dy in directions:
+                    node = (now[0] + dx, now[1] + dy)
+                    if 0 <= node[0] < rows and 0 <= node[1] < cols and node not in queue_max:
+                        if arr2D[node[0]][node[1]] in utils.VALID_VALUES_GHOST and utils.ghost_status[node[0]][node[1]] == 0:
+                            stack.append((node, path + [node], depth + 1))
+        
+        return None, expanded_nodes
+
+    # Kiểm tra điều kiện đầu vào
+    if start == end:
+        return [start], 0
+    if arr2D[start[0]][start[1]] not in utils.VALID_VALUES_GHOST or arr2D[end[0]][end[1]] not in utils.VALID_VALUES_GHOST:
+        return None, 0
+    if utils.ghost_status[start[0]][start[1]] == 1 or utils.ghost_status[end[0]][end[1]] == 1:
+        return None, 0
+
+    # Bắt đầu tìm kiếm theo độ sâu lặp
+    total_expanded_nodes = 0
+    for depth in range(rows * cols):
+        result, expand_nodes = DLS(start, end, depth)
+        total_expanded_nodes += expand_nodes
+        if result:
+            return result, total_expanded_nodes
+
+    return None, total_expanded_nodes
 
 # Ví dụ ma trận
 maze = [

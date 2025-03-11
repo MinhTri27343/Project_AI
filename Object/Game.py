@@ -27,7 +27,7 @@ class Game:
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
         self.player = setUp.player
         self.board = setUp.board
-   
+    
    
         
     def run(self):

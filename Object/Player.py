@@ -145,7 +145,6 @@ class Player:
                         self.moving = False
                         self.startup_counter = 0
                     break
-
     def eat_ghost(self, ghosts):
         center_x, center_y = utils.getCenter(self.x, self.y, boards)
         if self.power_up:

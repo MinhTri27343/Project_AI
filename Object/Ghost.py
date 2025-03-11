@@ -1,7 +1,10 @@
 import pygame
+import tracemalloc
+import time
 from const import *
 from board import boards
 from Algorithm.IDS import queue_max
+from InfoRecord.InfoRecord import InfoRecord
 # from utils import utils.convert_coordinates, utils.ghost_status
 import utils
 class Blinky: 
@@ -65,6 +68,8 @@ class Ghost:
         self.dead_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/dead.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.spooked_img = pygame.transform.scale(pygame.image.load(f'assets/ghost_images/powerup.png'), (WIDTH_GHOST, HEIGHT_GHOST))
         self.rect = self.draw(player)
+        self.isCalculateAlgorithmTime = False
+        self.info_record = None
         
     def resetIntoDefault(self):
         self.x_pos = self.x_origin
@@ -90,11 +95,30 @@ class Ghost:
         
         path = name_algorithm(level,  (ghost_i_coord, ghost_j_coord), (player_i_coord, player_j_coord))
         return path; 
+    def getPathAndExpandNodes(self, end , level, name_algorithm):
+        center_x, center_y = end
+        player_j_coord, player_i_coord = utils.convert_coordinates(center_x, center_y)
+        ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
+        
+        path, expand_nodes, self.nameAlgorithm  = name_algorithm(level,  (ghost_i_coord, ghost_j_coord), (player_i_coord, player_j_coord))
+        return path, expand_nodes, self.nameAlgorithm; 
     def move_towards_end_pos(self, end_center, level, name_algorithm, player):
         end_center_x, end_center_y = end_center
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         utils.ghost_status[ghost_i_coord][ghost_j_coord] = 0
-        path = self.getPath((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
+        start_time = time.time()
+        tracemalloc.start()
+        path, expand_nodes, nameAlgorithm = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
+        current_memory, peak_memory = tracemalloc.get_traced_memory()
+        end_time = time.time()
+        if (self.isCalculateAlgorithmTime == False):
+            search_time = end_time - start_time
+            self.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
+            self.info_record.showRecord()
+            self.isCalculateAlgorithmTime = True
+            # print(f"Current memory usage is {current / 10**6}MB; Peak was {peak_memory / 10**6}MB")
+            # print(f"Time to find the path is {self.search_time}")
+            # print(f"Expand node is {expand_nodes}")
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
