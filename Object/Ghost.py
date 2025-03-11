@@ -135,7 +135,7 @@ class Ghost:
             if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_x += self.speed
             elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_y -= self.speed
+                self.center_x -= self.speed
             elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_y -= self.speed
             elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST): 
