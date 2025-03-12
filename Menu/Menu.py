@@ -2,10 +2,10 @@ import pygame
 import pygame.locals
 from const import *
 class Menu:
-    def __init__(self):
+    def __init__(self, screen):
         self.background = pygame.transform.scale(pygame.image.load(f'assets/menu_images/background_menu.png'),(WIDTH, HEIGHT))
         self.width, self.height = self.background.get_size()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = screen
         pygame.display.set_caption("Background Example")
     def execute(self):
         running = True

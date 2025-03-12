@@ -48,6 +48,7 @@ class TestMenu:
                             break
                     if self.box_exit.collidepoint(event.pos):
                         running = False
+                        return False
 
 
     def createBoxOption(self):

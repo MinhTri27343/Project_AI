@@ -6,7 +6,6 @@ class Level6:
         self.algorithms = setUp.algorithms
         self.moving = setMoving
         setUp.player.name = name
-        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms)
-    def execute(self):
+        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms, 5)
         return self.game.run()
         

@@ -44,9 +44,11 @@ class Player:
         self.power_up = False
         self.eaten_ghost = [False, False, False, False]
         
-    def setPosition(self, x, y):
+    def setNewPosition(self, position):
+        x, y = position
         self.x = x
         self.y = y
+        self.circle = pygame.draw.circle(self.screen, "red", (self.x + self.width // 2, self.y + self.height // 2), 1, 1)
     
     def draw(self):
     # 0-RIGHT, 1-LEFT, 2-UP, 3-DOWN

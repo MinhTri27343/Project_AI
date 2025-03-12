@@ -5,7 +5,7 @@ class Level5:
         self.ghosts = setUp.ghosts
         self.algorithms = setUp.algorithms
         self.moving = setMoving
-        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms)
+        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms, 4)
     def execute(self):
         return self.game.run()
         

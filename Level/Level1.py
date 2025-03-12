@@ -7,17 +7,22 @@ class Level1:
         self.ghosts = [setUp.ghosts[0]]
         self.algorithms = [setUp.algorithms[0]]
         self.moving = setMoving
-        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms, 5)
+        self.game = Game(setUp, setMoving, self.ghosts, self.algorithms, 0)
     def execute(self):
-            #=====================================
+        running = True   
+        while running:
+             #=====================================
             menu_test = TestMenu(self.screen)
-            menu_test.execute()
+            if menu_test.execute() == False:
+                return
             ind_test = menu_test.ind_test
             pos_ghost, pos_player = FactoryTest.getProperties()["Test" + str(ind_test + 1)].getTest()
-            self.game.ghosts[0].x_pos, self.game.ghosts[0].y_pos = pos_ghost
-            self.game.player.x, self.game.player.y = pos_player
+            self.ghosts[0].setNewPosition(pos_ghost)
+            self.game.player.setNewPosition(pos_player)
             #=====================================
-            self.game.run()
+            return self.game.run()
+            break
+                
             
 
          
