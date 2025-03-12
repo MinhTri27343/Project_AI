@@ -8,7 +8,7 @@ import utils
 import time
 
 class Game:
-    def __init__(self, setUp, moving, ghosts, algorithms):
+    def __init__(self, setUp, moving, ghosts, algorithms, idLevel):
         self.screen = setUp.screen
         self.timer = setUp.timer
         self.music = setUp.music
@@ -29,10 +29,11 @@ class Game:
         self.player = setUp.player
         self.board = setUp.board
         self.music = setUp.music
-   
+        self.idLevel = idLevel
         
     def run(self):
         start_game = False
+       
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -105,6 +106,8 @@ class Game:
             if out == False:
                 return False
             pygame.display.flip()
+            for ghost in self.ghosts:
+                (ghost.x_pos, ghost.y_pos, 'TRi')
             if start_game == False:
                 self.music.musicStartGame()
                 time.sleep(5)
