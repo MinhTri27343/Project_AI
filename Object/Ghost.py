@@ -114,11 +114,12 @@ class Ghost:
         path, expand_nodes, nameAlgorithm = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
         # current_memory, peak_memory = tracemalloc.get_traced_memory()
         # end_time = time.time()
-        if (self.isCalculateAlgorithmTime == False):
+    
+        # if (self.isCalculateAlgorithmTime == False):
             # search_time = end_time - start_time
             # self.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
             # self.info_record.showRecord()
-            self.isCalculateAlgorithmTime = True
+            # self.isCalculateAlgorithmTime = True
             # print(f"Current memory usage is {current / 10**6}MB; Peak was {peak_memory / 10**6}MB")
             # print(f"Time to find the path is {self.search_time}")
             # print(f"Expand node is {expand_nodes}")

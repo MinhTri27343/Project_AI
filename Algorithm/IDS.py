@@ -41,7 +41,8 @@ def IDS(arr2D, start, end):
         total_expanded_nodes += expand_nodes
         if result != None:
             return result, total_expanded_nodes, "IDS"
-        depth += 100
+        depth += 200
+
     
     
     return None,total_expanded_nodes, "IDS"

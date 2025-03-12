@@ -32,8 +32,6 @@ class LeaderBoard:
                        
     def show_rank(self):
         """Hiển thị bảng xếp hạng cho đến khi người dùng đóng cửa sổ."""
-        
-       
         self.screen.blit(self.background, (0, 0))
         box_back_menu_image = pygame.transform.scale(pygame.image.load(f'assets/background_images/back_menu.png'),(200, 50))
         box_back_menu = pygame.Rect(20, 560, 200, 50)  

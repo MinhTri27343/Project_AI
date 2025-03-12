@@ -5,11 +5,13 @@ from EndGame.EndGameScreen import EndGameScreen
 from Algorithm.BFS import BFS
 from Menu.Menu import Menu
 import utils
+import time
+
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms):
         self.screen = setUp.screen
         self.timer = setUp.timer
-       
+        self.music = setUp.music
         self.running = True
         self.player_images = []
         self.numberRowMatrix = len(boards)
@@ -22,15 +24,15 @@ class Game:
         self.gameOverScreen = EndGameScreen("GAME OVER")
         self.win = False
         self.gameWinScreen = EndGameScreen("YOU WIN")
-
         for i in range(1, 5):
             self.player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
         self.player = setUp.player
         self.board = setUp.board
-   
+        self.music = setUp.music
    
         
     def run(self):
+        start_game = False
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -71,8 +73,6 @@ class Game:
             self.player.turns_allowed = self.player.check_position(boards)
             if self.player.moving and self.moving:  
                 self.player.move_player()
-            
-            
             for i in range(len(self.ghosts)):
                 if (self.ghosts[i].dead == False):
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
@@ -88,16 +88,28 @@ class Game:
             self.player.eat_ghost(self.ghosts)
             
             self.board.draw_misc()
+
             if (self.player.isGameOver() == True):
                 self.gameOver = True
+                self.music.stopMusicThread()
+                self.music.musicLose()
                 self.gameOverScreen.animate_text()
+                
             elif (utils.isWinGame(boards) == True):
                 self.win = True
+                self.music.stopMusicThread()
+                self.music.musicWin()
                 self.gameWinScreen.animate_text()
+                
             out = self.handle_events()
             if out == False:
                 return False
             pygame.display.flip()
+            if start_game == False:
+                self.music.musicStartGame()
+                time.sleep(5)
+                start_game = True
+            
         return True
 
     def handle_events(self):
@@ -137,8 +149,10 @@ class Game:
                  self.player.direction = DOWN
             # Nếu game over nhấn phím bất kỳ để thoát 
             if self.gameOver or self.win:
-                if event.type == pygame.QUIT:
-                    return False
-                if event.type == pygame.KEYDOWN:
-                    self.running = False  # Nhấn phím bất kỳ để 
-                    return True
+                # if event.type == pygame.QUIT:
+                #     return False
+                # if event.type == pygame.KEYDOWN:
+                #     self.running = False  # Nhấn phím bất kỳ để 
+                #     return True
+                self.running = False
+                return True
