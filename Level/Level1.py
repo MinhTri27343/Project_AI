@@ -1,6 +1,8 @@
 from utils import *
 from Object.Game import Game
 from Test.TestMenu import *
+from board import boards
+import utils
 class Level1: 
     def __init__(self, setUp, setMoving):
         self.screen = setUp.screen
