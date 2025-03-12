@@ -72,7 +72,15 @@ class Ghost:
         self.isCalculateAlgorithmTime = False
         self.info_record = None
         self.revive = False # Hoi sịnh  add 
-        
+
+
+    def setNewPosition(self, position):
+        pos_x, pos_y = position
+        self.x_pos = pos_x
+        self.y_pos = pos_y
+        self.x_origin = pos_x
+        self.y_origin = pos_y
+        self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)
     def resetIntoDefault(self):
         self.x_pos = self.x_origin
         self.y_pos = self.y_origin
