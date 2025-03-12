@@ -32,8 +32,8 @@ class Player:
         self.name = "Anonymous"
         
     def resetIntoDefault(self):
+        self.dead = False
         self.startup_counter = 0
-        self.power_counter = 0
         self.x, self.y = START_PLAYER_POSITION
         self.direction = RIGHT
         self.direction_command = RIGHT
@@ -57,9 +57,8 @@ class Player:
             self.screen.blit(pygame.transform.rotate(self.images[self.counter // 5], 270), (self.x, self.y))
     
     
+    # ADD 
     def check_collision(self):
-        num1 = (HEIGHT - 50) // (len(boards))
-        num2 = WIDTH // (len(boards[0]))
         center_x, center_y = utils.getCenter(self.x, self.y, boards)
         if 0 < self.x < WIDTH - 30:
             # Nếu ăn thức ăn thường thì score + 10
@@ -75,6 +74,8 @@ class Player:
                 self.power_up = True
                 self.power_counter = 0
                 self.eaten_ghost = [False, False, False, False]
+                return True
+        return False
                 
 
     def check_position(self, level):

@@ -44,11 +44,12 @@ class Game:
                 self.player.counter = 0
                 self.flicker = True
                 
-            
+            print ("Giá tri: ", self.player.power_up and self.player.power_counter, self.player.power_up, self.player.power_counter)
             # Xử lí trạng thái power-up. Nếu ăn thì duy trì trong 10s 
             if self.player.power_up and self.player.power_counter < TIME_POWER_UP * FPS:
                 self.player.power_counter += 1
             elif self.player.power_up and self.player.power_counter >= TIME_POWER_UP * FPS:
+                print("VO")
                 self.player.power_up = False
                 self.player.power_counter = 0
                 self.player.eaten_ghost = [False, False, False, False]
@@ -77,7 +78,12 @@ class Game:
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
                 elif (self.ghosts[i].dead == True): 
                     self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
-            self.player.check_collision()
+        
+            isEatBigDot = self.player.check_collision()
+            if (isEatBigDot == True):
+                for ghost in self.ghosts:
+                    ghost.revive = False
+                
             self.player.check_collision_no_power_up(self.ghosts)
             self.player.eat_ghost(self.ghosts)
             
