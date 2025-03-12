@@ -57,6 +57,8 @@ from Level.Level5 import Level5
 from Level.Level6 import Level6
 from Menu.Menu import Menu
 from Leaderboard.LeaderBoard import LeaderBoard
+from Music.music import Music
+
 class SetUpGame: 
     def __init__(self, boards):
         pygame.init()
@@ -67,13 +69,14 @@ class SetUpGame:
         player_images = []
         for i in range(1, 5):
             player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
-            
-        self.player = Player(player_x, player_y, self.screen, player_images, len(boards), len(boards[0]))
+        self.music = Music()
+        self.player = Player(player_x, player_y, self.screen, player_images, len(boards), len(boards[0]), self.music)
         self.board = Board(boards, self.screen, len(boards), len(boards[0]), self.player, self.font)
         self.ghosts = getGhosts(self.screen, self.player)
         self.algorithms = getAlgorithm()
         self.menu = Menu()
         self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
+        
     def execute(self):
         running = True
         out = True

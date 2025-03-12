@@ -4,8 +4,10 @@ from board import boards
 import utils
 import math
 from Algorithm.BFS import BFS
+from Music.music import Music
+import time
 class Player: 
-    def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix):
+    def __init__(self, x, y, screen, images, numberRowMatrix, numberColMatrix, music):
         self.x = x
         self.y = y
         self.direction = 0
@@ -30,7 +32,8 @@ class Player:
         self.circle = pygame.draw.circle(self.screen, "red", (self.x + self.width // 2, self.y + self.height // 2), 1, 1)
         self.gameOver = False
         self.name = "Anonymous"
-        
+        self.music = music
+        self.checkFirstPowerup = False
     def resetIntoDefault(self):
         self.startup_counter = 0
         self.power_counter = 0
@@ -64,7 +67,13 @@ class Player:
         if 0 < self.x < WIDTH - 30:
             # Nếu ăn thức ăn thường thì score + 10
             player_j_coordinate, player_i_coordinate = utils.convert_coordinates(center_x, center_y)
+            if self.checkFirstPowerup == True:
+                self.checkFirstPowerup = False
+                self.music.musicPowerUp()
             if self.level[player_i_coordinate][player_j_coordinate] == 1:
+                if self.power_up == False:
+                    self.music.stopMusicThread()
+                    self.music.musicPacmanChomp()
                 self.level[player_i_coordinate][player_j_coordinate] = 0
                 self.score += SCORE_DOT
             
@@ -75,7 +84,7 @@ class Player:
                 self.power_up = True
                 self.power_counter = 0
                 self.eaten_ghost = [False, False, False, False]
-                
+                self.checkFirstPowerup = True
 
     def check_position(self, level):
         center_x, center_y = utils.getCenter(self.x, self.y, level)
@@ -137,6 +146,8 @@ class Player:
                 if distance < DISTANCE_COLLISION and not ghost.dead:  
                     if self.lives > 0:
                         self.lives -= 1
+                        self.music.musicPacmanDeath()
+                        time.sleep(2)
                         self.resetIntoDefault()
                         for ghost in ghosts:
                             ghost.resetIntoDefault()
@@ -154,6 +165,7 @@ class Player:
                     ghost.eaten = True
                     self.score += SCORE_GHOST
                     ghost.dead = True
+                    self.music.musicPacmanEatGhost()
 
     
     def isGameOver(self):

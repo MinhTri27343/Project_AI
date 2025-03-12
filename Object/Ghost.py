@@ -106,19 +106,20 @@ class Ghost:
         end_center_x, end_center_y = end_center
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         utils.ghost_status[ghost_i_coord][ghost_j_coord] = 0
-        start_time = time.time()
-        tracemalloc.start()
+        # start_time = time.time()
+        # tracemalloc.start()
         path, expand_nodes, nameAlgorithm = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
-        current_memory, peak_memory = tracemalloc.get_traced_memory()
-        end_time = time.time()
-        if (self.isCalculateAlgorithmTime == False):
-            search_time = end_time - start_time
-            self.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
-            self.info_record.showRecord()
-            self.isCalculateAlgorithmTime = True
+        # current_memory, peak_memory = tracemalloc.get_traced_memory()
+        # end_time = time.time()
+        # if (self.isCalculateAlgorithmTime == False):
+            # search_time = end_time - start_time
+            # self.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
+            # self.info_record.showRecord()
+            # self.isCalculateAlgorithmTime = True
             # print(f"Current memory usage is {current / 10**6}MB; Peak was {peak_memory / 10**6}MB")
             # print(f"Time to find the path is {self.search_time}")
             # print(f"Expand node is {expand_nodes}")
+            
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
@@ -159,7 +160,7 @@ class Ghost:
             if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_x += self.speed
             elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_y -= self.speed
+                self.center_x -= self.speed
             elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_y -= self.speed
             elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST): 
