@@ -119,7 +119,6 @@ class Ghost:
             # print(f"Current memory usage is {current / 10**6}MB; Peak was {peak_memory / 10**6}MB")
             # print(f"Time to find the path is {self.search_time}")
             # print(f"Expand node is {expand_nodes}")
-            
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):

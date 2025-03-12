@@ -369,7 +369,7 @@
     },
     {
         "name": "luaneptrai\r",
-        "score": 1540
+        "score": 1
     },
     {
         "name": "Random",
@@ -400,6 +400,10 @@
         "score": 1300
     },
     {
+        "name": "Loc",
+        "score": 1270
+    },
+    {
         "name": "Anonymous",
         "score": 1250
     },
@@ -421,7 +425,7 @@
     },
     {
         "name": "Anonymous",
-        "score": 990
+        "score": 1040
     },
     {
         "name": "m",
@@ -510,6 +514,18 @@
     {
         "name": "Anonymous",
         "score": 110
+    },
+    {
+        "name": "Anonymous",
+        "score": 90
+    },
+    {
+        "name": "Anonymous",
+        "score": 90
+    },
+    {
+        "name": "Anonymous",
+        "score": 90
     },
     {
         "name": "Anonymous",
@@ -758,5 +774,9 @@
     {
         "name": "Anonymous",
         "score": 10
+    },
+    {
+        "name": "Anonymous",
+        "score": 0
     }
 ]
