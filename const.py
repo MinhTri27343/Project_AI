@@ -29,7 +29,8 @@ SCORE_GHOST: int = 200
 # GHOST 
 WIDTH_GHOST: int = 23
 HEIGHT_GHOST: int = 23 
-SPEED_GHOST: int = 1 
+FAST_SPEED_GHOST: int = 5
+SLOW_SPEED_GHOST: int = 1
 ID_BLINKY: int = 0
 ID_INKY: int = 1
 ID_PINKY: int = 2
@@ -56,7 +57,7 @@ GATE: int = 9
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # DISTANCE 
-DISTANCE_COLLISION: int = 15
+DISTANCE_COLLISION: int = 16
 
 #Rank file
 RANK_FILE="assets/File/rank.json"
@@ -68,9 +69,9 @@ BLACK = (0, 0, 0)
 
 # GAME 
 # TIMER_START_GAME: int = 4 # fix into 3 seconds to test games
-TIMER_START_GAME: int = 0 # fix into 3 seconds to test games
+TIMER_START_GAME: int = 5 # fix into 3 seconds to test games
 TIMER_PACMAN_DEATH: int = 1
 
 # Depth of IDS
 SMALL_DEPTH_IDS: int = 1
-LARGE_DEPTH_IDS: int = 200
+LARGE_DEPTH_IDS: int = 100

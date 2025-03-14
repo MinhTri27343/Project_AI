@@ -58,7 +58,6 @@ class Ghost:
         self.x_inBox = x_inBox
         self.y_inBox = y_inBox
         self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)
-        self.speed = SPEED_GHOST
         self.img = img
         self.direction = direct
         self.dead = False
@@ -123,49 +122,49 @@ class Ghost:
             if path[0] not in queue_max:
                 queue_max.append(path[0])
             next_i, next_j = path[1]
-            if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_y %  heightCell < heightCell // 2 - 2:
-                    self.center_y += self.speed
-                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed 
-                if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
-                    self.center_x += self.speed
+                    self.center_y += SLOW_SPEED_GHOST
+                elif self.center_y %  heightCell > heightCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_y -= SLOW_SPEED_GHOST 
+                if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + SLOW_SPEED_GHOST + 1: 
+                    self.center_x += SLOW_SPEED_GHOST
                     self.direction = RIGHT
-            elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
                 # print(ghosts[self.id], "Xet: ", heightCell // 2 - 2, self.center_y %  heightCell, heightCell // 2 + self.speed + 1)
                 if self.center_y %  heightCell < heightCell // 2 - 2:
-                    self.center_y += self.speed
-                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed 
-                if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
+                    self.center_y += SLOW_SPEED_GHOST
+                elif self.center_y %  heightCell > heightCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_y -= SLOW_SPEED_GHOST 
+                if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_x -= SLOW_SPEED_GHOST
                     self.direction = LEFT
-            elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_x %  widthCell < widthCell // 2 - 2:
-                    self.center_x += self.speed 
-                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
-                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    self.center_y += self.speed
+                    self.center_x += SLOW_SPEED_GHOST 
+                elif self.center_x %  widthCell > widthCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_x -= SLOW_SPEED_GHOST
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_y += SLOW_SPEED_GHOST
                     self.direction = DOWN
                 
-            elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_x %  widthCell < widthCell // 2 - 2:
-                    self.center_x += self.speed
-                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
-                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed
+                    self.center_x += SLOW_SPEED_GHOST
+                elif self.center_x %  widthCell > widthCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_x -= SLOW_SPEED_GHOST
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + SLOW_SPEED_GHOST + 1:
+                    self.center_y -= SLOW_SPEED_GHOST
                     self.direction = UP
-        elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SPEED_GHOST < self.center_x < end_center_x + SPEED_GHOST and end_center_y - SPEED_GHOST < self.center_y < end_center_y + SPEED_GHOST)):
-            if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_x += self.speed
-            elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_x -= self.speed
-            elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_y -= self.speed
-            elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST): 
-                self.center_y += self.speed
+        elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SLOW_SPEED_GHOST < self.center_x < end_center_x + SLOW_SPEED_GHOST and end_center_y - SLOW_SPEED_GHOST < self.center_y < end_center_y + SLOW_SPEED_GHOST)):
+            if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_x += SLOW_SPEED_GHOST
+            elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_x -= SLOW_SPEED_GHOST
+            elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_y -= SLOW_SPEED_GHOST
+            elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST): 
+                self.center_y += SLOW_SPEED_GHOST
         elif (self.dead == True and path and len(path) == 1):
             self.center_x = end_center_x
             self.center_y = end_center_y
@@ -190,53 +189,53 @@ class Ghost:
             if path[0] not in queue_max:
                 queue_max.append(path[0])
             next_i, next_j = path[indexCurrentPath[0]]
-            print("next:" , next_i, next_j)
-            print("ghost: ", ghost_i_coord, ghost_j_coord, [indexCurrentPath[0]])
+            # print("next:" , next_i, next_j)
+            # print("ghost: ", ghost_i_coord, ghost_j_coord, [indexCurrentPath[0]])
             if (next_i == ghost_i_coord and next_j == ghost_j_coord and indexCurrentPath[0] <= len(path) - 2): 
                 indexCurrentPath[0] += 1
                  
-            if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_y %  heightCell < heightCell // 2 - 2:
-                    self.center_y += self.speed
-                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed 
-                if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
-                    self.center_x += self.speed
+                    self.center_y += FAST_SPEED_GHOST
+                elif self.center_y %  heightCell > heightCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_y -= FAST_SPEED_GHOST 
+                if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + FAST_SPEED_GHOST + 1: 
+                    self.center_x += FAST_SPEED_GHOST
                     self.direction = RIGHT
-            elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                # print(ghosts[self.id], "Xet: ", heightCell // 2 - 2, self.center_y %  heightCell, heightCell // 2 + self.speed + 1)
+            elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
+                # print(ghosts[self.id], "Xet: ", heightCell // 2 - 2, self.center_y %  heightCell, heightCell // 2 + FAST_SPEED_GHOST + 1)
                 if self.center_y %  heightCell < heightCell // 2 - 2:
-                    self.center_y += self.speed
-                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed 
-                if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
+                    self.center_y += FAST_SPEED_GHOST
+                elif self.center_y %  heightCell > heightCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_y -= FAST_SPEED_GHOST 
+                if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_x -= FAST_SPEED_GHOST
                     self.direction = LEFT
-            elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_x %  widthCell < widthCell // 2 - 2:
-                    self.center_x += self.speed 
-                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
-                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    self.center_y += self.speed
+                    self.center_x += FAST_SPEED_GHOST 
+                elif self.center_x %  widthCell > widthCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_x -= FAST_SPEED_GHOST
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_y += FAST_SPEED_GHOST
                     self.direction = DOWN
-            elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+            elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
                 if self.center_x %  widthCell < widthCell // 2 - 2:
-                    self.center_x += self.speed
-                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
-                    self.center_x -= self.speed
-                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    self.center_y -= self.speed
+                    self.center_x += FAST_SPEED_GHOST
+                elif self.center_x %  widthCell > widthCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_x -= FAST_SPEED_GHOST
+                if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + FAST_SPEED_GHOST + 1:
+                    self.center_y -= FAST_SPEED_GHOST
                     self.direction = UP
-        elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SPEED_GHOST < self.center_x < end_center_x + SPEED_GHOST and end_center_y - SPEED_GHOST < self.center_y < end_center_y + SPEED_GHOST)):
-            if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_x += self.speed
-            elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_x -= self.speed
-            elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                self.center_y -= self.speed
-            elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST): 
-                self.center_y += self.speed
+        elif (self.dead == False and path and len(path) == 1 and not (end_center_x - FAST_SPEED_GHOST < self.center_x < end_center_x + FAST_SPEED_GHOST and end_center_y - FAST_SPEED_GHOST < self.center_y < end_center_y + FAST_SPEED_GHOST)):
+            if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_x += FAST_SPEED_GHOST
+            elif (self.direction == LEFT) and utils.isValidToLeft(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_x -= FAST_SPEED_GHOST
+            elif (self.direction == UP) and utils.isValidToUp(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST):
+                self.center_y -= FAST_SPEED_GHOST
+            elif (self.direction == DOWN) and utils.isValidToDown(self.center_x, self.center_y, FAST_SPEED_GHOST, VALID_VALUES_GHOST): 
+                self.center_y += FAST_SPEED_GHOST
         elif (self.dead == True and path and len(path) == 1):
             self.center_x = end_center_x
             self.center_y = end_center_y

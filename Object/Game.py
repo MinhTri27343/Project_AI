@@ -152,6 +152,7 @@ class Game:
                     running = True
                     while running: 
                         for event in pygame.event.get():
+                            # TODO: Bỏ chỗ này
                             if event.type == pygame.KEYDOWN:
                                 utils.info_record.isShowRecord = False
                                 self.running = False

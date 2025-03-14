@@ -47,8 +47,6 @@ class Board:
         score_text = self.font.render(f'Score: {self.player.score}', True, 'white')
         self.screen.blit(score_text, (10, HEIGHT - 30))
         
-
-        
         # Hiển thị mạng còn sống của player
         for i in range(self.player.lives):
             self.screen.blit(pygame.transform.scale(self.player.images[0], (25, 25)), (WIDTH - (self.player.lives + 2) * WIDTH_LIVES + (i * WIDTH_LIVES), HEIGHT - WIDTH_LIVES))

@@ -44,7 +44,7 @@ class Test3(Test):
 @FactoryTest.register("Test4")
 class Test4(Test):
     def __init__(self):
-        super().__init__((40, 30), (295, 400))
+        super().__init__((40, 30), (300, 400))
 @FactoryTest.register("Test5")
 class Test5(Test):
     def __init__(self):

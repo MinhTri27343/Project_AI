@@ -46,7 +46,6 @@ class LeaderBoard:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            # Vẽ background và overlay
            
             # Hiển thị tiêu đề bảng xếp hạng
                 if event.type == pygame.MOUSEBUTTONDOWN:

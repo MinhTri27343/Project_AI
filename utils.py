@@ -80,4 +80,4 @@ colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255),
 
 info_record = None
 isMusic = True
-isUseLargeDepth = True 
+isUseLargeDepth = True
