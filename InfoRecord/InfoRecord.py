@@ -27,7 +27,7 @@ class InfoRecord:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     running = False
                     return False
-            pygame.draw.rect(self.screen, (255, 165, 0), self.box_rect, border_radius=10)
+            pygame.draw.rect(self.screen, (211, 211, 211), self.box_rect, border_radius=10)
             y_offset = 120
             self.printStringToBox(y_offset, "Name algorith", self.nameAlgorithm)
             y_offset += 40
