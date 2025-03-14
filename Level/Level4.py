@@ -25,6 +25,7 @@ class Level4:
             pos_ghost, pos_player = FactoryTest.getProperties()["Test" + str(ind_test + 1)].getTest()
             self.ghosts[0].setNewPosition(pos_ghost)
             self.game.player.setNewPosition(pos_player)
+            self.ghosts[0].isCalculateAlgorithmTime = False
             #=====================================
             self.game.run()
                 
