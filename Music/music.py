@@ -32,7 +32,7 @@ class Music:
             self.isThreading = True
             self.sound = pygame.mixer.Sound(file_music).play(loops=-1)
             while not self.stop_flag:  # Kiểm tra stop_flag
-                time.sleep(0.1)
+                time.sleep(0.2)
             self.sound.stop()
     def musicPowerUp(self):
         if(utils.isMusic == True):

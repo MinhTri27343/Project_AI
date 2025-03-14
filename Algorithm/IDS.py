@@ -1,7 +1,7 @@
 import utils
 from collections import deque
 from const import *
-queue_max = deque(maxlen= 10)
+queue_max = deque(maxlen= 2)
 def IDS(arr2D, start, end):
     def DLS(arr2D, start, end, max_depth):
         stack = [(start, [tuple(start)], 0)]  #[now , path, depth]
@@ -37,14 +37,13 @@ def IDS(arr2D, start, end):
     depth = 0
     depth_limit = rows * cols
     if utils.isUseLargeDepth == True:
-        depth_limit = LARGE_DEPTH_IDS
+        depth_limit = DEPTH_LIMIT
     total_expanded_nodes = 0
    
     while depth <= depth_limit:
         result, expand_nodes = DLS(arr2D, start, end, depth)
         total_expanded_nodes += expand_nodes
         if result != None:
-            # print(result)
             return result, total_expanded_nodes, "IDS"
         depth += SMALL_DEPTH_IDS if utils.isUseLargeDepth == False else LARGE_DEPTH_IDS  
     return None,total_expanded_nodes, "IDS"

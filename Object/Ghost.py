@@ -119,7 +119,7 @@ class Ghost:
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
-            if path[0] not in queue_max:
+            if path[0] not in queue_max and nameAlgorithm == "IDS":
                 queue_max.append(path[0])
             next_i, next_j = path[1]
             if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, SLOW_SPEED_GHOST, VALID_VALUES_GHOST):
@@ -186,11 +186,7 @@ class Ghost:
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
-            if path[0] not in queue_max:
-                queue_max.append(path[0])
             next_i, next_j = path[indexCurrentPath[0]]
-            # print("next:" , next_i, next_j)
-            # print("ghost: ", ghost_i_coord, ghost_j_coord, [indexCurrentPath[0]])
             if (next_i == ghost_i_coord and next_j == ghost_j_coord and indexCurrentPath[0] <= len(path) - 2): 
                 indexCurrentPath[0] += 1
                  

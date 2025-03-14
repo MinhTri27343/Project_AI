@@ -57,7 +57,7 @@ GATE: int = 9
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # DISTANCE 
-DISTANCE_COLLISION: int = 16
+DISTANCE_COLLISION: int = 18
 
 #Rank file
 RANK_FILE="assets/File/rank.json"
@@ -74,4 +74,6 @@ TIMER_PACMAN_DEATH: int = 1
 
 # Depth of IDS
 SMALL_DEPTH_IDS: int = 1
-LARGE_DEPTH_IDS: int = 100
+#TODO: Sửa chỗ này 100 thành 10
+LARGE_DEPTH_IDS: int = 10
+DEPTH_LIMIT: int = 40
