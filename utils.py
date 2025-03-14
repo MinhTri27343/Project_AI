@@ -20,15 +20,15 @@ def convert_coordinates(center_x, center_y):
     y_coordinate = center_y // num1
     return x_coordinate, y_coordinate
 
-def getGhosts(screen, player): 
+def getGhosts(screen, player, board): 
     blinkyInformation = Blinky()
     inkyInformation = Inky()
     pinkyInformation = Pinky()
     clydeInformation = Clyde()
-    blinky = Ghost(blinkyInformation.x, blinkyInformation.y, blinkyInformation.image, blinkyInformation.direction, blinkyInformation.id, screen, player, blinkyInformation.x_inBox, blinkyInformation.y_inBox)
-    inky = Ghost(inkyInformation.x, inkyInformation.y, inkyInformation.image, inkyInformation.direction, inkyInformation.id, screen, player, inkyInformation.x_inBox, inkyInformation.y_inBox)
-    pinky = Ghost(pinkyInformation.x, pinkyInformation.y, pinkyInformation.image, pinkyInformation.direction, pinkyInformation.id, screen, player, pinkyInformation.x_inBox, pinkyInformation.y_inBox)
-    clyde = Ghost(clydeInformation.x, clydeInformation.y, clydeInformation.image, clydeInformation.direction, clydeInformation.id, screen, player, clydeInformation.x_inBox, clydeInformation.y_inBox)
+    blinky = Ghost(blinkyInformation.x, blinkyInformation.y, blinkyInformation.image, blinkyInformation.direction, blinkyInformation.id, screen, player, blinkyInformation.x_inBox, blinkyInformation.y_inBox, board)
+    inky = Ghost(inkyInformation.x, inkyInformation.y, inkyInformation.image, inkyInformation.direction, inkyInformation.id, screen, player, inkyInformation.x_inBox, inkyInformation.y_inBox, board)
+    pinky = Ghost(pinkyInformation.x, pinkyInformation.y, pinkyInformation.image, pinkyInformation.direction, pinkyInformation.id, screen, player, pinkyInformation.x_inBox, pinkyInformation.y_inBox, board)
+    clyde = Ghost(clydeInformation.x, clydeInformation.y, clydeInformation.image, clydeInformation.direction, clydeInformation.id, screen, player, clydeInformation.x_inBox, clydeInformation.y_inBox, board)
     return [inky, pinky, clyde, blinky]
 
 def getAlgorithm():
@@ -75,9 +75,9 @@ def isWinGame(boards):
     return True
 
 
-
 ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
 colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255), (0, 0, 255), (128, 0, 128)]
 
 info_record = None
-isMusic = False
+isMusic = True
+isUseLargeDepth = True 

@@ -7,6 +7,8 @@ from Menu.Menu import Menu
 import utils
 import time
 import sys
+import tracemalloc
+from InfoRecord.InfoRecord import InfoRecord
 
 class Game:
     def __init__(self, setUp, moving, ghosts, algorithms, idLevel):
@@ -31,13 +33,29 @@ class Game:
         self.board = setUp.board
         self.music = setUp.music
         self.idLevel = idLevel
-        
+        self.isCalculateAlgorithmTime = False
+    
     def run(self):
-        # print("Id", self.idLevel)
         start_game = False
-        
         if (0 <= self.idLevel <= 3): 
+            self.isCalculateAlgorithmTime = False
+            utils.isUseLargeDepth = False 
             self.running = True
+            start_time = time.time()
+            tracemalloc.start()
+            for i in range(len(self.ghosts)):
+                path, expand_nodes, nameAlgorithm = self.ghosts[i].getPathAndExpandNodes(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i]) # Chuyen vao pos nhung lay toa do tai center 
+            current_memory, peak_memory = tracemalloc.get_traced_memory()
+            end_time = time.time()
+            if (self.isCalculateAlgorithmTime == False):
+                search_time = end_time - start_time
+                utils.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
+                self.isCalculateAlgorithmTime = True
+        else: 
+            utils.isUseLargeDepth = True
+        
+        
+        indexCurrentPath = [1]
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -80,12 +98,12 @@ class Game:
             for i in range(len(self.ghosts)):
                 if (self.ghosts[i].dead == False):
                     if (0 <= self.idLevel <= 3): 
-                        self.ghosts[i].move_towards_end_pos_search_first_time(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
+                        self.ghosts[i].move_towards_end_pos_search_first_time(utils.getCenter(self.player.x, self.player.y, boards), boards, path, indexCurrentPath)
                     else:   
                         self.ghosts[i].move_towards_end_pos(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i], self.player)
                 elif (self.ghosts[i].dead == True): 
                     if (0 <= self.idLevel <= 3):
-                        self.ghosts[i].move_towards_end_pos_search_first_time(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
+                        self.ghosts[i].move_towards_end_pos_search_first_time(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, path, indexCurrentPath)
                     else: 
                         self.ghosts[i].move_towards_end_pos(utils.getCenter(ghost.x_inBox, ghost.y_inBox, boards), boards, BFS, self.player)
         

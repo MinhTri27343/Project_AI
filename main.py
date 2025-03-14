@@ -32,7 +32,8 @@ class SetUpGame:
         self.music = Music()
         self.player = Player(player_x, player_y, self.screen, player_images, boards, self.music)
         self.board = Board(boards, self.screen, len(boards), len(boards[0]), self.player, self.font)
-        self.ghosts = getGhosts(self.screen, self.player)
+        self.ghosts = getGhosts(self.screen, self.player, self.board)
+        
         self.algorithms = getAlgorithm()
         self.menu = Menu()
         self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
@@ -94,7 +95,7 @@ class SetUpGame:
         self.player = Player(player_x, player_y, self.screen, player_images, boards, self.music)
         # print("Done self.player")
         self.board = Board(boards, self.screen, len(boards), len(boards[0]), self.player, self.font)
-        self.ghosts = utils.getGhosts(self.screen, self.player)
+        self.ghosts = utils.getGhosts(self.screen, self.player, self.board)
         self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
         utils.ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
 

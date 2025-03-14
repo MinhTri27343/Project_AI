@@ -50,7 +50,7 @@ class Clyde:
         self.id = ID_CLYDE
 
 class Ghost:
-    def __init__(self, j_coord, i_coord, img, direct, id,  screen, player, x_inBox, y_inBox):
+    def __init__(self, j_coord, i_coord, img, direct, id,  screen, player, x_inBox, y_inBox, board):
         self.x_origin = j_coord
         self.y_origin = i_coord
         self.x_pos = j_coord
@@ -72,6 +72,7 @@ class Ghost:
         self.isCalculateAlgorithmTime = False
         self.revive = False # Hoi sịnh  add 
         self.player = player
+        self.board = board
 
 
     def setNewPosition(self, position):
@@ -118,23 +119,16 @@ class Ghost:
         path, expand_nodes, nameAlgorithm = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
-        ghosts = ["REd", "Blue", "Pink", "Orange"]
-        print(ghosts[self.id], "Coor: ", ghost_i_coord, ghost_j_coord, "Pos: ", self.center_x, self.center_y, "Value matrix: ", level[ghost_i_coord][ghost_j_coord])
-        print("Path: ", path)
         if (path and len(path) >= 2):
             if path[0] not in queue_max:
                 queue_max.append(path[0])
             next_i, next_j = path[1]
-            mark_first = False
-            mark_second = False
             if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 if self.center_y %  heightCell < heightCell // 2 - 2:
                     self.center_y += self.speed
                 elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
                     self.center_y -= self.speed 
                 if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
-                    mark_first = True
-                    mark_second = True
                     self.center_x += self.speed
                     self.direction = RIGHT
             elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
@@ -144,8 +138,6 @@ class Ghost:
                 elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
                     self.center_y -= self.speed 
                 if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
-                    mark_first = True
-                    mark_second = True
                     self.center_x -= self.speed
                     self.direction = LEFT
             elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
@@ -154,8 +146,6 @@ class Ghost:
                 elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
                     self.center_x -= self.speed
                 if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    mark_first = True  
-                    mark_second = True
                     self.center_y += self.speed
                     self.direction = DOWN
                 
@@ -165,36 +155,8 @@ class Ghost:
                 elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
                     self.center_x -= self.speed
                 if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    mark_first = True
-                    mark_second = True
                     self.center_y -= self.speed
                     self.direction = UP
-                # print("self", widthCell // 2 - 2, self.center_x %  widthCell, widthCell // 2 + self.speed + 1,  self.direction)
-            # if mark_first == False: 
-            #     if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         print("GO")
-            #         self.center_x += self.speed
-            #         print(self.center_x, "Center")
-            #         mark_second == True 
-            #     elif (self.direction == LEFT ) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         self.center_x -= self.speed 
-            #         mark_second == True
-            #     elif (self.direction == UP) and  utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         self.center_y -= self.speed 
-            #         mark_second == True
-            #     elif (self.direction == DOWN ) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):  
-            #         self.center_y += self.speed
-            #         mark_second == True
-            # if mark_second == False:
-            #     print(ghosts[self.id], "Xet 2: ", heightCell // 2 - 2, self.center_y %  heightCell, heightCell // 2 + self.speed + 1, mark_second, self.direction, utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST))
-            #     if (self.direction == RIGHT) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         self.center_x -= self.speed
-            #     elif (self.direction == LEFT ) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         self.center_x += self.speed 
-            #     elif (self.direction == UP) and  utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-            #         self.center_y += self.speed 
-            #     elif (self.direction == DOWN ) and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):  
-            #         self.center_y -= self.speed
         elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SPEED_GHOST < self.center_x < end_center_x + SPEED_GHOST and end_center_y - SPEED_GHOST < self.center_y < end_center_y + SPEED_GHOST)):
             if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_x += self.speed
@@ -218,59 +180,54 @@ class Ghost:
         utils.ghost_status[i_coord][j_coord] = 1
         return True
     
-    def move_towards_end_pos_search_first_time(self, end_center, level, name_algorithm, player):
+    def move_towards_end_pos_search_first_time(self, end_center, level, path, indexCurrentPath):
         end_center_x, end_center_y = end_center
         ghost_j_coord, ghost_i_coord = utils.convert_coordinates(self.center_x, self.center_y)
         utils.ghost_status[ghost_i_coord][ghost_j_coord] = 0
-        start_time = time.time()
-        tracemalloc.start()
-        path, expand_nodes, nameAlgorithm = self.getPathAndExpandNodes((end_center_x, end_center_y), level, name_algorithm) # Chuyen vao pos nhung lay toa do tai center 
-        current_memory, peak_memory = tracemalloc.get_traced_memory()
-        end_time = time.time()
-        ghosts = ["REd", "Blue", "Pink", "Orange"]
-        print(ghosts[self.id], "Coor: ", ghost_i_coord, ghost_j_coord, "Pos: ", self.center_x, self.center_y, "Value matrix: ", level[ghost_i_coord][ghost_j_coord])
-        print("Path: ", path)
-    
-        if (self.isCalculateAlgorithmTime == False):
-            search_time = end_time - start_time
-            utils.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))
-            self.isCalculateAlgorithmTime = True
         heightCell = (HEIGHT - 50) // len(level)
         widthCell = WIDTH // len(level[0])
         if (path and len(path) >= 2):
             if path[0] not in queue_max:
                 queue_max.append(path[0])
-            next_i, next_j = path[1]
-            mark = False
+            next_i, next_j = path[indexCurrentPath[0]]
+            print("next:" , next_i, next_j)
+            print("ghost: ", ghost_i_coord, ghost_j_coord, [indexCurrentPath[0]])
+            if (next_i == ghost_i_coord and next_j == ghost_j_coord and indexCurrentPath[0] <= len(path) - 2): 
+                indexCurrentPath[0] += 1
+                 
             if next_j > ghost_j_coord and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if self.center_y %  heightCell < heightCell // 2 - 2:
+                    self.center_y += self.speed
+                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
+                    self.center_y -= self.speed 
                 if heightCell // 2 - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1: 
-                    mark = True
                     self.center_x += self.speed
                     self.direction = RIGHT
             elif next_j < ghost_j_coord and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                # print(ghosts[self.id], "Xet: ", heightCell // 2 - 2, self.center_y %  heightCell, heightCell // 2 + self.speed + 1)
+                if self.center_y %  heightCell < heightCell // 2 - 2:
+                    self.center_y += self.speed
+                elif self.center_y %  heightCell > heightCell // 2 + self.speed + 1:
+                    self.center_y -= self.speed 
                 if heightCell // 2  - 2 <= self.center_y %  heightCell <= heightCell // 2 + self.speed + 1:
-                    mark = True
                     self.center_x -= self.speed
                     self.direction = LEFT
             elif next_i > ghost_i_coord and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if self.center_x %  widthCell < widthCell // 2 - 2:
+                    self.center_x += self.speed 
+                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
+                    self.center_x -= self.speed
                 if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    mark = True  
                     self.center_y += self.speed
                     self.direction = DOWN
             elif next_i < ghost_i_coord and utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
+                if self.center_x %  widthCell < widthCell // 2 - 2:
+                    self.center_x += self.speed
+                elif self.center_x %  widthCell > widthCell // 2 + self.speed + 1:
+                    self.center_x -= self.speed
                 if widthCell // 2 - 2 <= self.center_x %  widthCell <= widthCell // 2 + self.speed + 1:
-                    mark = True
                     self.center_y -= self.speed
                     self.direction = UP
-            if mark == False: 
-                if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                    self.center_x += self.speed
-                elif (self.direction == LEFT ) and utils.isValidToLeft(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                    self.center_x -= self.speed 
-                elif (self.direction == UP) and  utils.isValidToUp(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
-                    self.center_y -= self.speed 
-                elif (self.direction == DOWN ) and utils.isValidToDown(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):  
-                    self.center_y += self.speed
         elif (self.dead == False and path and len(path) == 1 and not (end_center_x - SPEED_GHOST < self.center_x < end_center_x + SPEED_GHOST and end_center_y - SPEED_GHOST < self.center_y < end_center_y + SPEED_GHOST)):
             if (self.direction == RIGHT) and utils.isValidToRight(self.center_x, self.center_y, self.speed, VALID_VALUES_GHOST):
                 self.center_x += self.speed
@@ -284,8 +241,8 @@ class Ghost:
             self.center_x = end_center_x
             self.center_y = end_center_y
             self.dead = False
-            self.eaten = False  
-            self.revive = True   
+            self.eaten = False  # add 
+            self.revive = True  # add 
             return False
             
         self.x_pos = self.center_x - (HEIGHT - 50) // len(boards) // 2
