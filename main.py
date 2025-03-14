@@ -49,6 +49,7 @@ class SetUpGame:
             if name_user == "":
                 name_user = "Anonymous"
             if ind_level == 0:
+                # level1 = Level1(setup, False)
                 level1 = Level1(setup, False)
                 level1.execute()
                 self.restart()

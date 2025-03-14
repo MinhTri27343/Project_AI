@@ -80,4 +80,4 @@ ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
 colors = [(255, 0, 0), (255, 165, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255), (0, 0, 255), (128, 0, 128)]
 
 info_record = None
-isMusic = True
+isMusic = False
