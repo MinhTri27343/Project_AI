@@ -17,8 +17,7 @@ import utils
 from Menu.Menu import Menu
 from Leaderboard.LeaderBoard import LeaderBoard
 from Music.music import Music
-
-
+from Algorithm.IDS import queue_max
 class SetUpGame: 
     def __init__(self, boards):
         pygame.init()
@@ -50,11 +49,9 @@ class SetUpGame:
             if name_user == "":
                 name_user = "Anonymous"
             if ind_level == 0:
-                # level1 = Level1(setup, False)
                 level1 = Level1(setup, False)
                 level1.execute()
                 self.restart()
-
             if ind_level == 1:
                 level2 = Level2(setup, False)
                 level2.execute()
@@ -82,7 +79,6 @@ class SetUpGame:
                 if self.leaderboard.show_rank() != True:
                     running = False 
                 self.restart()
-            
         pygame.quit()
         sys.exit()
     
@@ -92,12 +88,23 @@ class SetUpGame:
         boards = copy.deepcopy(boards_root)
         for i in range(1, 5):
             player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (WIDTH_PLAYER, HEIGHT_PLAYER)))
+        
+        del self.player
+        del self.board
+        del self.ghosts
+        del self.leaderboard
+        
+        self.player = None
+        self.board = None
+        self.ghosts = None
+        self.leaderboard = None
+        
         self.player = Player(player_x, player_y, self.screen, player_images, boards, self.music)
-        # print("Done self.player")
         self.board = Board(boards, self.screen, len(boards), len(boards[0]), self.player, self.font)
         self.ghosts = utils.getGhosts(self.screen, self.player, self.board)
         self.leaderboard = LeaderBoard(self.screen, RANK_FILE, self.player)
         utils.ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
+        queue_max.clear()
 
 if __name__ == "__main__":
     setup = SetUpGame(boards)

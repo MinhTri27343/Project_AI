@@ -47,6 +47,7 @@ class Game:
                 path, expand_nodes, nameAlgorithm = self.ghosts[i].getPathAndExpandNodes(utils.getCenter(self.player.x, self.player.y, boards), boards, self.algorithms[i]) # Chuyen vao pos nhung lay toa do tai center 
             current_memory, peak_memory = tracemalloc.get_traced_memory()
             end_time = time.time()
+            tracemalloc.stop()
             if (self.isCalculateAlgorithmTime == False):
                 search_time = end_time - start_time
                 utils.info_record = InfoRecord(self.screen, nameAlgorithm, round(search_time, 5), expand_nodes, round(current_memory / 10 ** 6, 5), round(peak_memory / 10 ** 6, 5))

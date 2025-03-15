@@ -52,8 +52,8 @@ class LeaderBoard:
                     if box_back_menu.collidepoint(event.pos):
                         return True
             for i, entry in enumerate(self.rank_data[:4], start=0):
-                text_name = self.font_leaderboard.render(f"{entry['name']}", True, WHITE)
-                text_score = self.font_leaderboard.render(f"{entry['score']} pts", True, WHITE)
+                text_name = self.font_leaderboard.render(f"{entry['name']}", False, WHITE)
+                text_score = self.font_leaderboard.render(f"{entry['score']} pts", False, WHITE)
                 self.screen.blit(text_name, (250, 220 + 75 * i))
                 self.screen.blit(text_score, (WIDTH // 2 + 150, 220 + 75 * i))
             pygame.display.flip()

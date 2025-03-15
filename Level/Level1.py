@@ -30,6 +30,7 @@ class Level1:
             self.ghosts[0].isCalculateAlgorithmTime = False
             #=====================================
             self.game.run()
+        del self
                 
                 
             

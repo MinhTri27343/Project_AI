@@ -87,6 +87,7 @@ class Ghost:
         self.center_x, self.center_y = utils.getCenter(self.x_pos, self.y_pos, boards)
         self.dead = False
         utils.ghost_status = [[0] * len(boards[0]) for _ in range(len(boards))]
+        queue_max.clear()
     def draw(self, player):
         if (not player.power_up and not self.dead) or (self.revive and player.power_up and not self.dead and not self.eaten):
             self.screen.blit(self.img, (self.x_pos, self.y_pos))

@@ -29,15 +29,15 @@ class InfoRecord:
                     return False
             pygame.draw.rect(self.screen, (211, 211, 211), self.box_rect, border_radius=10)
             y_offset = 120
-            self.printStringToBox(y_offset, "Name algorith", self.nameAlgorithm)
+            self.printStringToBox(y_offset, "Name algorithm", self.nameAlgorithm)
             y_offset += 40
-            self.printStringToBox(y_offset, "Search time", self.search_time)
+            self.printStringToBox(y_offset, "Search time (s)", self.search_time)
             y_offset += 40
-            self.printStringToBox(y_offset, "Current memory", self.current_memory)
+            self.printStringToBox(y_offset, "Current memory (MB)", self.current_memory)
             y_offset += 40
-            self.printStringToBox(y_offset, "Peak memory", self.peak_memory)
+            self.printStringToBox(y_offset, "Peak memory (MB)", self.peak_memory)
             y_offset += 40
-            self.printStringToBox(y_offset, "Expand node", self.expand_node)
+            self.printStringToBox(y_offset, "Expanded node", self.expand_node)
             y_offset += 40
             self.printStringToBoxVariant(y_offset, "Press any key to continue ...")
             pygame.display.flip()  # Cập nhật màn hình
